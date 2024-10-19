@@ -1,0 +1,66 @@
+Installation:
+
+npm init -y
+npm install
+
+manual installation, if no package.json:
+npm install express mongoose bcryptjs jsonwebtoken dotenv nodemon
+
+
+Test installation:
+
+manual installation, if no package.json:
+npm install jest supertest --save-dev
+
+
+In package.json overwrite script tag with
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+
+
+.env file creation:
+
+JWT_SECRET=paskaties whatsappā
+MONGODB_URI=paskaties whatsappā
+
+
+Running: 
+(backend and static frontend)
+
+npm run dev
+open this -> http://localhost:3000/
+
+
+Run tests, close app:
+
+npm test
+
+
+Project structure, initial:
+car-rental/
+│
+├── node_modules/
+├── src/ (backend)
+│   ├── index.js
+│   ├── models/
+│   │   ├── user.js
+│   │   └── car.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── cars.js
+│   │   └── reservations.js
+├── ui/ (frontend)
+│   ├── app.js
+│   ├── index.html
+│   └── styles.css
+├── tests/ (backend tests)
+│   ├── setup.js
+│   ├── routes/
+│   │   ├── auth.test.js
+│   │   └── cars.test.js
+├── .env
+├── package.json
+└── package-lock.json
