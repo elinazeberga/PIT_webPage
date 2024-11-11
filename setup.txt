@@ -38,6 +38,9 @@ Run tests, close app:
 
 npm test
 
+Better to run single test not all at the time DB response is too slow for that:
+example:
+npx jest tests/routes/bookings.test.js
 
 Project structure, initial:
 car-rental/

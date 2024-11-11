@@ -7,20 +7,24 @@ beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
 
+    mongoose.set('strictQuery', true); // Set the strictQuery option
+
     await mongoose.connect(uri, {
         useNewUrlParser: true,
-        useUnifiedTopology: true,
+        useUnifiedTopology: true
     });
 });
 
 afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+    if (mongoServer) {
+        await mongoServer.stop();
+    }
 });
 
 afterEach(async () => {
     const collections = mongoose.connection.collections;
-
     for (const key in collections) {
         const collection = collections[key];
         await collection.deleteMany();

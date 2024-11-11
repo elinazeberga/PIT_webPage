@@ -2,14 +2,21 @@ const request = require('supertest');
 const app = require('../../src/index');
 const User = require('../../src/models/user');
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }  
-
 describe('Auth Routes', () => {
-    const userData = { username: Math.random().toString(36), password: Math.random().toString(36) };
+    const generateUserData = () => ({
+        username: `testuser_${Date.now()}`,
+        password: `password_${Date.now()}`,
+        email: `email_${Date.now()}@example.com`,
+        fullname: 'Test User',
+        phone: '1234567890'
+    });
+
+    beforeEach(async () => {
+        await User.deleteMany({});
+    });
 
     it('should register a user', async () => {
+        const userData = generateUserData();
         const res = await request(app)
             .post('/api/auth/register')
             .send(userData);
@@ -19,14 +26,13 @@ describe('Auth Routes', () => {
     });
 
     it('should login a user', async () => {
-        await sleep(100)
-
+        const userData = generateUserData();
         const user = new User(userData);
         await user.save();
 
         const res = await request(app)
             .post('/api/auth/login')
-            .send(userData);
+            .send({ username: userData.username, password: userData.password });
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toHaveProperty('token');
