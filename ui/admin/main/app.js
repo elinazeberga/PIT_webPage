@@ -15,18 +15,19 @@ adminNavigationPane.innerHTML = `
   </ul>`;
 
 function navigate(page) {
-  fetch(`/api/admin/${page}`)
+  fetch(`/api/admin/page/${page}`)
   .then(response => {
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
     return response.text();
     })
-    .then(html => {
-        content.innerHTML = html;
+    .then(response => {
+        content.innerHTML = response;
     })
     .catch(error => {
       console.error('Error fetching page data:', error);
       content.innerHTML = '<p>Failed to load page.</p>';
     });
 };
+
