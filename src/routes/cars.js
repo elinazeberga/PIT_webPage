@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new car (admin only)
-router.post('/', authenticateAdmin, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { make, model, year, pricePerDay } = req.body;
         const car = new Car({ make, model, year, pricePerDay });

@@ -14,16 +14,22 @@ adminNavigationPane.innerHTML = `
     <li><a href="#" onclick="signout()">Sign out</a></li>
   </ul>`;
 
-function navigate(page) {
-  fetch(`/api/admin/page/${page}`)
+function navigate(page, param = null) {
+  fetch(`/api/admin/page/${page}/${param}`)
   .then(response => {
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
-    return response.text();
+    return response.json();
     })
     .then(response => {
-        content.innerHTML = response;
+      const [htmlContent, scriptContent] = response;
+        content.innerHTML = htmlContent;
+
+        const scriptElement = document.createElement('script');
+        scriptElement.type = 'text/javascript';
+        scriptElement.innerHTML = scriptContent;
+        document.head.appendChild(scriptElement);
     })
     .catch(error => {
       console.error('Error fetching page data:', error);
