@@ -17,8 +17,8 @@ router.get('/', async (req, res) => {
 // Add a new car (admin only)
 router.post('/', async (req, res) => {
     try {
-        const { make, model, year, pricePerDay } = req.body;
-        const car = new Car({ make, model, year, pricePerDay });
+        const { make, model, registrationNumber, type, fuelType, gearboxType, year, pricePerDay, status, images, notes} = req.body;
+        const car = new Car({ make, model, registrationNumber, type, fuelType, gearboxType, year, pricePerDay, status, images, notes });
         await car.save();
         res.status(201).send({ message: 'Car added successfully', car });
     } catch (err) {
