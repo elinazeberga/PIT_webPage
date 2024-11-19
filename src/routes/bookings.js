@@ -41,9 +41,9 @@ router.get('/:id', authenticateUser, async (req, res) => {
 });
 
 // Create a new booking
-router.post('/', authenticateUser, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        const { userId, carId, rentalStartDate, rentalEndDate } = req.body;
+        const { userId, carId, rentalStartDate, rentalEndDate, status } = req.body;
         
         // Find the car and calculate total price
         const car = await Car.findById(carId);
@@ -62,12 +62,13 @@ router.post('/', authenticateUser, async (req, res) => {
             rentalStartDate,
             rentalEndDate,
             totalPrice,
-            status: 'pending'
+            status
         });
 
         await booking.save();
         res.status(201).send({ message: 'Booking created successfully', booking });
     } catch (err) {
+        console.log(err);
         res.status(500).send({ message: 'Error creating booking', error: err });
     }
 });

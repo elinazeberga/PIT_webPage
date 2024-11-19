@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const CarSchema = new mongoose.Schema({
     make: { type: String, required: true },
     model: { type: String, required: true },
-    registrationNumber: { type: String, required: true },
+    registrationNumber: { type: String, required: true, unique: true},
     type: { type: String, enum: ['Compact', 'Estate', 'Sedan', 'SUV', 'Luxury'], required: true, default: 'Compact'},
     fuelType: { type: String, enum: ['Petrol', 'Diesel', 'Electric'], required: true, default: 'Petrol'},
     gearboxType: { type: String, enum: ['Manual', 'Automatic'], required: true, default: 'Automatic'},

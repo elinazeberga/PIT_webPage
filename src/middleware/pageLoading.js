@@ -4,32 +4,8 @@ const userModel = require('../models/user');
 const pages = require('../pages/pages');
 const fs = require('fs').promises;  // Using fs.promises for async file reading
 
-async function loadPage(page, param) {
-    const pagePath = pages[page];
-    try {
-        const data = await fs.readFile(pagePath, 'utf-8');
-        let htmlTemplate = data;
-        // Dynamically load content based on page type
-        switch (page) {
-            case 'catalogue':
-                return [htmlTemplate.replace('{{tableData}}', await loadCatalogue())];
-            case 'reservations':
-                return [htmlTemplate.replace('{{tableData}}', await loadReservations())];
-            case 'users':
-                return [htmlTemplate.replace('{{tableData}}', await loadUsers())];
-            case 'vehicle':
-                const script = await fs.readFile(pages['vehiclescript'], 'utf-8');
-                return [await loadVehicle(data, param), script];
-        }
-        // Replace the placeholder with dynamic content
-    } catch (err) {
-        console.error(`Error reading page template: ${page}`, err);
-        throw new Error('Error loading page template');
-    }
-}
-
-async function loadVehicle(data, param) {
-    const defaultFields = {
+const DEFAULT_FIELDS = {
+    vehicle: {
         vehicleID: "Automatically Generated",
         vehicleMake: "",
         vehicleModel: "",
@@ -38,10 +14,93 @@ async function loadVehicle(data, param) {
         vehiclePrice: "",
         vehicleNotes: "",
         vehicleImages: ""
+    },
+    user: {
+        userID: "Automatically Generated",
+        userName: "",
+        userSurname: "",
+        userEmail: "",
+        userPhone: "",
+        userLicense: ""
+    },
+    reservation: {
+        reservationID: "Automatically Generated",
+        reservationDate: "",
+        reservationStart: "",
+        reservationEnd: "",
+        reservationPrice: ""
+    }
+};
+
+async function loadPage(page, param){
+    try {
+        const pagePath = pages[page]; // Get template path
+        if (!pagePath) {
+            throw new Error(`Invalid page: ${page}`);
+        }
+
+        const htmlTemplate = await fs.readFile(pagePath, 'utf-8'); // Load template
+        return await processPage(page, htmlTemplate, param);
+    } catch (error) {
+        console.error(`Error loading page: ${page}`, error);
+        throw new Error(`Failed to load page: ${error.message}`);
+    }
+}
+
+async function processPage(page, template, param) {
+    const pageHandlers = {
+        catalogue: async () => [template.replace('{{tableData}}', await loadCatalogue())],
+        vehicle: async () => {
+            const vehicleScript = await fs.readFile(pages['vehiclescript'], 'utf-8');
+            return [await loadVehicle(template, param), vehicleScript];
+        },
+        reservations: async () => [template.replace('{{tableData}}', await loadReservations())],
+        reservation: async () => {
+            const reservationScript = await fs.readFile(pages['reservationscript'], 'utf-8');
+            return [await loadReservation(template, param), reservationScript];
+        },
+        users: async () => [template.replace('{{tableData}}', await loadUsers())],
+        user: async () => {
+            const userScript = await fs.readFile(pages['userscript'], 'utf-8');
+            return [await loadUser(template, param), userScript];
+        },
+        home: async() => [template]
     };
 
+    const handler = pageHandlers[page];
+    if (!handler) {
+        throw new Error(`No handler found for page: ${page}`);
+    }
+
+    return handler();
+};
+
+async function loadCatalogue() {
+    let vehicleData = '';
+    try {
+        // Fetch vehicle data from the database
+        const cars = await carModel.find();
+        return cars.map(car => createVehicleTableRow(car.toObject())).join('');
+    } catch (error) {
+        throw new Error(`Failed to load catalogue: ${error.message}`);
+    }
+}
+
+function createVehicleTableRow(vehicle) {
+    return `
+        <tr>
+            <td><img src="${vehicle.images[0]}" alt="Car image" width="100"></td>
+            <td>${vehicle.registrationNumber}</td>
+            <td>${vehicle.make} ${vehicle.model}</td>
+            <td>${vehicle.status}</td>
+            <td><button onclick="location.href='./vehicle/?id=${vehicle._id}';">View</button></td>
+        </tr>
+    `;
+}
+
+async function loadVehicle(template, param) {
     if (param === 'new') {
-        return replaceTemplateFields(data, defaultFields);
+        return replaceTemplateFields(template, DEFAULT_FIELDS.vehicle);
     }
 
     try {
@@ -59,19 +118,20 @@ async function loadVehicle(data, param) {
             vehicleNotes: car.notes
         };
 
-        // Handle select fields
-        const selectFields = ['type', 'gearboxType', 'fuelType', 'status'];
-        selectFields.forEach(field => {
-            data = data.replace(
-                `value="${car[field]}"`, 
-                `value="${car[field]}" selected`
-            );
-        });
-
-        return replaceTemplateFields(data, fields);
+        processSelectFields(template, car, ['type', 'gearboxType', 'fuelType', 'status']);
+        return replaceTemplateFields(template, fields);
     } catch (err) {
         throw new Error('Error fetching car');
     }
+}
+
+function processSelectFields(template, data, fields) {
+    return fields.reduce((acc, field) => {
+        return acc.replace(
+            `value="${data[field]}"`,
+            `value="${data[field]}" selected`
+        );
+    }, template);
 }
 
 function replaceTemplateFields(template, fields) {
@@ -80,105 +140,139 @@ function replaceTemplateFields(template, fields) {
     }, template);
 }
 
-async function loadCatalogue() {
-    let vehicleData = '';
-    try {
-        // Fetch vehicle data from the database
-        const cars = await carModel.find();
-        vehicleData = cars.map(car => car.toObject());
-    } catch (err) {
-        throw new Error('Error fetching cars');
-    }
-
-    let vehicleTableHtml = '';
-    vehicleData.forEach(vehicle => {
-        vehicleTableHtml += `
-            <tr>
-                <td><img src="${(vehicle.images)[0]}" alt="Car image" width="100"></td>
-                <td>${vehicle.registrationNumber}</td>
-                <td>${vehicle.make} ${vehicle.model}</td>
-                <td>${vehicle.status}</td>
-                <td><button onclick ="location.href= './vehicle/?id=${vehicle._id}';">View</button></td>
-            </tr>
-        `;
-    });
-    return vehicleTableHtml;
-}
-
 async function loadUsers() {
-    let userData = '';
     try {
-        // Fetch user data from the database
         const users = await userModel.find();
-        userData = users.map(user => user.toObject());
-    } catch (err) {
-        throw new Error('Error fetching users');
+        return users.map(user => createUserTableRow(user.toObject())).join('');
+    } catch (error) {
+        throw new Error(`Failed to load users: ${error.message}`);
     }
-
-    let userTableHtml = '';
-    userData.forEach(user => {
-        userTableHtml += `
-            <tr>
-                <td>${user._id}</td>
-                <td>${user.name}</td>
-                <td>${user.surname}</td>
-                <td>${user.licenseNr}</td>
-                <td>${user.loyaltyStatus}</td>
-                <td><button onclick="navigate('user', ${user._id})">View</button></td>
-            </tr>
-        `;
-    });
-    return userTableHtml;
 }
 
+function createUserTableRow(user) {
+    return `
+        <tr>
+            <td>${user._id}</td>
+            <td>${user.name}</td>
+            <td>${user.lastName}</td>
+            <td>${user.loyalty}</td>
+            <td><button onclick ="location.href= './user/?id=${user._id}';">View</button></td>
+        </tr>
+    `;
+}
+
+async function loadUser(template, param) {
+    if (param === 'new') {
+        return replaceTemplateFields(template, DEFAULT_FIELDS.user);
+    }
+
+    try {
+        const user = await userModel.findById(param);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const fields = {
+            userID: param,
+            userName: user.name,
+            userSurname: user.lastName,
+            userEmail: user.email,
+            userPhone: user.phone,
+            userLicense: user.licenseNr
+        };
+
+        processSelectFields(template, user, ['role', 'loyalty']);
+        return replaceTemplateFields(template, fields);
+    } catch (error) {
+        throw new Error(`Failed to load user: ${error.message}`);
+    }
+}
 
 async function loadReservations() {
-    let bookingData = '';
-    let userData = '';
-    let vehicleData = '';
     try {
-        // Fetch booking data from the database
-        const bookings = await bookingModel.find();
-        bookingData = bookings.map(reservation => reservation.toObject());
-    } catch (err) {
-        throw new Error('Error fetching bookings');
+        const [bookings, users, vehicles] = await Promise.all([
+            bookingModel.find(),
+            userModel.find(),
+            carModel.find()
+        ]);
+
+        const usersMap = new Map(users.map(user => [user._id.toString(), user.toObject()]));
+        const vehiclesMap = new Map(vehicles.map(vehicle => [vehicle._id.toString(), vehicle.toObject()]));
+
+        return bookings
+            .map(booking => createReservationTableRow(booking.toObject(), usersMap, vehiclesMap))
+            .join('');
+    } catch (error) {
+        throw new Error(`Failed to load reservations: ${error.message}`);
+    }
+}
+
+function createReservationTableRow(booking, usersMap, vehiclesMap) {
+    const vehicle = vehiclesMap.get(booking.car.toString());
+    const user = usersMap.get(booking.user.toString());
+
+    if (!vehicle || !user) {
+        console.error('Missing vehicle or user data for reservation:', booking._id);
+        return '';
     }
 
-    try {
-        // Fetch user data from the database
-        const users = await userModel.find();
-        userData = users.map(user => user.toObject());
-    } catch (err) {
-        throw new Error('Error fetching users');
-    }
+    return `
+        <tr>
+            <td>${vehicle.registrationNumber}</td>
+            <td>${vehicle.make} ${vehicle.model}</td>
+            <td>${user.name} ${user.lastName}</td>
+            <td>${formatDate(booking.rentalStartDate)}</td>
+            <td>${formatDate(booking.rentalEndDate)}</td>
+            <td>${booking.status}</td>
+            <td><button onclick="showData('navigate', '${booking._id}')">View</button></td>
+        </tr>
+    `;
+}
 
+async function loadReservation(template, param) {
     try {
-        // Fetch vehicle data from the database
-        const cars = await carModel.find();
-        vehicleData = cars.map(car => car.toObject());
-    } catch (err) {
-        throw new Error('Error fetching cars');
-    }
+        const [users, vehicles] = await Promise.all([
+            userModel.find(),
+            carModel.find()
+        ]);
 
-    let bookingTableHtml = '';
-    bookingData.forEach(reservation => {
-        console.log(vehicleData[0]._id);
-        console.log(reservation.vehicleID);
-        const vehicle = vehicleData.filter(v => v._id = reservation.vehicleID);
-        const user = userData.filter(u => u._id = reservation.userID);
-        bookingTableHtml += `
-            <tr>
-                <td>${vehicle.regNr}</td>
-                <td>${vehicle.make} ${vehicle.model}</td>
-                <td>${user.name} ${user.surname}</td>
-                <td>${formatDate(reservation.startDate)}</td>
-                <td>${formatDate(reservation.returnDate)}</td>
-                <td>${reservation.status}</td>
-                <td><button onclick="showData('navigate', ${reservation._id})">View</button></td>
-            </tr>
-        `;
-    });
-    return bookingTableHtml;
+        template = createSelectOptions(template, users, 'renterList', user => 
+            `${user.email} - ${user.name} ${user.lastName}`
+        );
+
+        template = createSelectOptions(template, vehicles, 'vehicleList', vehicle => 
+            `${vehicle.registrationNumber} - ${vehicle.make} ${vehicle.model}`
+        );
+
+        if (param === 'new') {
+            return replaceTemplateFields(template, DEFAULT_FIELDS.reservation);
+        }
+
+        const reservation = await bookingModel.findById(param);
+        if (!reservation) {
+            throw new Error('Reservation not found');
+        }
+
+        const fields = {
+            reservationID: param,
+            reservationDate: reservation.reservationDate,
+            reservationStart: reservation.rentalStartDate,
+            reservationEnd: reservation.rentalEndDate,
+            reservationPrice: reservation.totalPrice
+        };
+
+        processSelectFields(template, reservation, ['status']);
+        return replaceTemplateFields(template, fields);
+    } catch (error) {
+        throw new Error(`Failed to load reservation: ${error.message}`);
+    }
+}
+
+function createSelectOptions(template, items, placeholder, labelFn) {
+    const options = items
+        .map(item => `<option value="${item._id}">${labelFn(item)}</option>`)
+        .join('');
+    return template.replace(`{{${placeholder}}}`, options);
 }
 
 function formatDate(dateString) {
@@ -197,7 +291,6 @@ function formatDate(dateString) {
     
     return formattedDate;
 }
-
 
 module.exports = {
     loadPage
