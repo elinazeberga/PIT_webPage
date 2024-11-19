@@ -22,7 +22,24 @@ router.post('/', async (req, res) => {
         await car.save();
         res.status(201).send({ message: 'Car added successfully', car });
     } catch (err) {
+        console.log(err);
         res.status(500).send({ message: 'Error adding car', error: err });
+    }
+});
+
+router.put('/alter', async (req, res) => {
+    const { id, ...updates } = req.body; // Extract ID and other updates from the request body
+    if (!id) {
+        return res.status(400).send({ message: 'ID is required to update car information' });
+    }
+    try {
+        const updatedCar = await Car.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        if (!updatedCar) {
+            return res.status(404).send({ message: 'Car not found' });
+        }
+        res.send({ message: 'Car updated successfully', car: updatedCar });
+    } catch (err) {
+        res.status(500).send({ message: 'Error updating car', error: err });
     }
 });
 

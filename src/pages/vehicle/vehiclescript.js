@@ -8,7 +8,10 @@ form.addEventListener('submit', function(event) {
         formData[key] = value;
     });
     console.log('Form data:', formData);
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
     const data = {
+      id: id,
       make: formData.make,
       model: formData.model,
       registrationNumber: formData.regNr,
@@ -18,24 +21,50 @@ form.addEventListener('submit', function(event) {
       year: formData.year,
       pricePerDay: formData.price,
       status: formData.status, 
-      images: formData.image ? formData.image.split(',') : [],
+      images: formData.image.split(','),
       notes: formData.notes 
     };
-    fetch('/api/cars', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log('Car added successfully');
-      } else {
-        console.error('Error adding car:', response.status);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    if (id == 'new') {
+      fetch('/api/cars', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Car added successfully');
+          window.location.href = "../";
+        } else {
+          console.error('Error adding car:', response.status);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+    else {
+      const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== "")
+      );
+      fetch('/api/cars/alter', {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filteredData)
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Car edited successfully');
+          window.location.href = "../";
+        } else {
+          console.error('Error adding car:', response.status);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
 });

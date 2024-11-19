@@ -118,7 +118,7 @@ async function loadVehicle(template, param) {
             vehicleNotes: car.notes
         };
 
-        processSelectFields(template, car, ['type', 'gearboxType', 'fuelType', 'status']);
+        template = processSelectFields(template, car, ['type', 'gearboxType', 'fuelType', 'status']);
         return replaceTemplateFields(template, fields);
     } catch (err) {
         throw new Error('Error fetching car');
@@ -126,12 +126,13 @@ async function loadVehicle(template, param) {
 }
 
 function processSelectFields(template, data, fields) {
-    return fields.reduce((acc, field) => {
-        return acc.replace(
-            `value="${data[field]}"`,
-            `value="${data[field]}" selected`
+    fields.forEach(element => {
+        template = template.replace(
+            `value="${data[element]}"`,
+            `value="${data[element]}" selected`
         );
-    }, template);
+    });
+    return template;
 }
 
 function replaceTemplateFields(template, fields) {

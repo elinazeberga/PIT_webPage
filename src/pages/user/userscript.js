@@ -32,6 +32,7 @@ form.addEventListener('submit', function(event) {
     .then(response => {
       if (response.ok) {
         console.log('User added successfully');
+        window.location.href = "../";
       } else {
         console.error('Error adding user:', response.status);
       }
