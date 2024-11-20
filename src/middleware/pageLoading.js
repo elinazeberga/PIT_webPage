@@ -225,7 +225,7 @@ function createReservationTableRow(booking, usersMap, vehiclesMap) {
             <td>${formatDate(booking.rentalStartDate)}</td>
             <td>${formatDate(booking.rentalEndDate)}</td>
             <td>${booking.status}</td>
-            <td><button onclick="showData('navigate', '${booking._id}')">View</button></td>
+            <td><button onclick ="location.href= './reservation/?id=${booking._id}';">View</button></td>
         </tr>
     `;
 }
@@ -256,9 +256,9 @@ async function loadReservation(template, param) {
 
         const fields = {
             reservationID: param,
-            reservationDate: reservation.reservationDate,
-            reservationStart: reservation.rentalStartDate,
-            reservationEnd: reservation.rentalEndDate,
+            reservationDate: parseDate(reservation.reservationDate),
+            reservationStart: parseDate(reservation.rentalStartDate),
+            reservationEnd: parseDate(reservation.rentalEndDate),
             reservationPrice: reservation.totalPrice
         };
 
@@ -269,6 +269,11 @@ async function loadReservation(template, param) {
     }
 }
 
+function parseDate(dateString) {
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 16);
+
+}
 function createSelectOptions(template, items, placeholder, labelFn) {
     const options = items
         .map(item => `<option value="${item._id}">${labelFn(item)}</option>`)
