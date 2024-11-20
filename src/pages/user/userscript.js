@@ -11,7 +11,10 @@ form.addEventListener('submit', function(event) {
         alert("Passwords do not match");
         throw new Error("Password mismatch");
     }
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
     const data = {
+      id,
       password: formData.password,
       role: formData.role,
       email: formData.email,
@@ -21,23 +24,46 @@ form.addEventListener('submit', function(event) {
       licenseNr: formData.license,
       loyalty: formData.loyalty
     };
-    console.log('Form data:', data);
-    fetch('/api/auth/register', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log('User added successfully');
-        window.location.href = "../";
-      } else {
-        console.error('Error adding user:', response.status);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    if (id == 'new') {
+      fetch('/api/auth/register', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('User added successfully');
+          window.location.href = "../";
+        } else {
+          console.error('Error adding user:', response.status);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    } else {
+      const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== "")
+      );
+      fetch('/api/auth/alter', {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filteredData)
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('User edited successfully');
+          window.location.href = "../";
+        } else {
+          console.error('Error adding user:', response.status);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
 });

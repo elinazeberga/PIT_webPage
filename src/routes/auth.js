@@ -31,4 +31,22 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.put('/alter', async (req, res) => {
+    const { id, ...updates } = req.body; // Extract ID and other updates from the request body
+    if (!id) {
+        console.log(id);
+        return res.status(400).send({ message: 'ID is required to update user information' });
+    }
+    try {
+        const updatedUser = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        if (!updatedUser) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        res.send({ message: 'User updated successfully', User: updatedUser });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: 'Error updating user', error: err });
+    }
+});
+
 module.exports = router;
