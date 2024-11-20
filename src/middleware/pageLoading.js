@@ -2,6 +2,7 @@ const carModel = require('../models/car');
 const bookingModel = require('../models/booking');
 const userModel = require('../models/user');
 const pages = require('../pages/pages');
+const paymentModel = require('../models/payment');
 const fs = require('fs').promises;  // Using fs.promises for async file reading
 
 const DEFAULT_FIELDS = {
@@ -29,6 +30,11 @@ const DEFAULT_FIELDS = {
         reservationStart: "",
         reservationEnd: "",
         reservationPrice: ""
+    },
+    payment: {
+        paymentID: "Automatically Generated",
+        paymentAmount: "",
+        paymentDate: "On save"
     }
 };
 
@@ -64,6 +70,11 @@ async function processPage(page, template, param) {
             const userScript = await fs.readFile(pages['userscript'], 'utf-8');
             return [await loadUser(template, param), userScript];
         },
+        payments: async () => [template.replace('{{tableData}}', await loadPayments())],
+        payment: async () => {
+            const paymentScript = await fs.readFile(pages['paymentscript'], 'utf-8');
+            return [await loadPayment(template, param), paymentScript];
+        },
         home: async() => [template]
     };
 
@@ -76,9 +87,7 @@ async function processPage(page, template, param) {
 };
 
 async function loadCatalogue() {
-    let vehicleData = '';
     try {
-        // Fetch vehicle data from the database
         const cars = await carModel.find();
         return cars.map(car => createVehicleTableRow(car.toObject())).join('');
     } catch (error) {
@@ -266,6 +275,55 @@ async function loadReservation(template, param) {
         return replaceTemplateFields(template, fields);
     } catch (error) {
         throw new Error(`Failed to load reservation: ${error.message}`);
+    }
+}
+ 
+async function loadPayments() {
+    try {
+        const payments = await paymentModel.find();
+        return payments.map(payment => createPaymentTableRow(payment.toObject())).join('');
+    } catch (error) {
+        throw new Error(`Failed to load payments: ${error.message}`);
+    }
+}
+
+function createPaymentTableRow(payment) {
+    return `
+        <tr>
+            <td>${payment.booking}</td>
+            <td>${payment.amount}</td>
+            <td>${payment.paymentDate}</td>
+            <td>${payment.status}</td>
+            <td><button onclick="location.href='./payment/?id=${payment._id}';">View</button></td>
+        </tr>
+    `;
+}
+
+async function loadPayment(template, param) {
+    try {
+        const bookings = await bookingModel.find();
+
+        template = createSelectOptions(template, bookings, 'bookingList', booking => 
+            `${booking._id}`
+        );
+
+        if (param === 'new') {
+            return replaceTemplateFields(template, DEFAULT_FIELDS.payment);
+        }
+
+        const payment = await paymentModel.findById(param);
+        if (!payment) throw new Error('Payment not found');
+
+        const fields = {
+            paymentID: param,
+            paymentAmount: payment.amount,
+            paymentDate: payment.paymentDate
+        };
+
+        template = processSelectFields(template, payment, ['status', 'booking']);
+        return replaceTemplateFields(template, fields);
+    } catch (err) {
+        throw new Error('Error fetching booking');
     }
 }
 

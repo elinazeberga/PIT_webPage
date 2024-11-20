@@ -14,5 +14,9 @@ module.exports = {
 
     catalogue: path.join(__dirname, 'vehicle','catalog.html'),
     vehicle: path.join(__dirname, 'vehicle', 'vehicle.html'),
-    vehiclescript: path.join(__dirname, 'vehicle', 'vehiclescript.js')
+    vehiclescript: path.join(__dirname, 'vehicle', 'vehiclescript.js'),
+
+    payments: path.join(__dirname, 'payment','payments.html'),
+    payment: path.join(__dirname, 'payment', 'payment.html'),
+    paymentscript: path.join(__dirname, 'payment', 'paymentscript.js')
 };

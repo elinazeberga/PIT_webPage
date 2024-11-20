@@ -1,5 +1,6 @@
 const express = require('express');
 const Payment = require('../models/payment');
+const { update } = require('../models/user');
 
 const router = express.Router();
 
@@ -37,11 +38,27 @@ router.post('/', async (req, res) => {
             paymentDate: new Date(),
             status
         });
-        
         await payment.save();
         res.status(201).send({ message: 'Payment created successfully', payment });
     } catch (err) {
+        console.log(err);
         res.status(500).send({ message: 'Error creating payment', error: err });
+    }
+});
+
+router.put('/alter', async (req, res) => {
+    const { id, ...updates } = req.body; // Extract ID and other updates from the request body
+    if (!id) {
+        return res.status(400).send({ message: 'ID is required to update payment information' });
+    }
+    try {
+        const updatedPayment = await Payment.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        if (!updatedPayment) {
+            return res.status(404).send({ message: 'Payment not found' });
+        }
+        res.send({ message: 'Payment updated successfully', car: updatedPayment });
+    } catch (err) {
+        res.status(500).send({ message: 'Error updating payment', error: err });
     }
 });
 

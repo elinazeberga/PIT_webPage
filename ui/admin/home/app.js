@@ -12,6 +12,7 @@ adminNavigationPane.innerHTML = `
     <li><a href="/admin/home/catalogue">Cars</a></li>
     <li><a href="/admin/home/reservations">Reservations</a></li>
     <li><a href="/admin/home/users">Users</a></li>
+    <li><a href="/admin/home/payments">Payments</a></li>
     <li><a href="#" onclick="signout()">Sign out</a></li>
   </ul>`;
 
