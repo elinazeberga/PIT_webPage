@@ -7,11 +7,10 @@ form.addEventListener('submit', function(event) {
     formElements.forEach((value, key) => {
         formData[key] = value;
     });
-    console.log('Form data:', formData);
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     const data = {
-      id: id,
+      id,
       make: formData.make,
       model: formData.model,
       registrationNumber: formData.regNr,

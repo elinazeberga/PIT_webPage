@@ -127,9 +127,10 @@ async function loadVehicle(template, param) {
 
 function processSelectFields(template, data, fields) {
     fields.forEach(element => {
+        const elementValue = data[element].toString();
         template = template.replace(
-            `value="${data[element]}"`,
-            `value="${data[element]}" selected`
+            `value="${elementValue}"`,
+            `value="${elementValue}" selected`
         );
     });
     return template;
@@ -182,7 +183,7 @@ async function loadUser(template, param) {
             userLicense: user.licenseNr
         };
 
-        processSelectFields(template, user, ['role', 'loyalty']);
+        template = processSelectFields(template, user, ['role', 'loyalty']);
         return replaceTemplateFields(template, fields);
     } catch (error) {
         throw new Error(`Failed to load user: ${error.message}`);
@@ -261,8 +262,7 @@ async function loadReservation(template, param) {
             reservationEnd: parseDate(reservation.rentalEndDate),
             reservationPrice: reservation.totalPrice
         };
-
-        processSelectFields(template, reservation, ['status']);
+        template = processSelectFields(template, reservation, ['status', 'user', 'car']);
         return replaceTemplateFields(template, fields);
     } catch (error) {
         throw new Error(`Failed to load reservation: ${error.message}`);
@@ -272,8 +272,8 @@ async function loadReservation(template, param) {
 function parseDate(dateString) {
     const date = new Date(dateString);
     return date.toISOString().slice(0, 16);
-
 }
+
 function createSelectOptions(template, items, placeholder, labelFn) {
     const options = items
         .map(item => `<option value="${item._id}">${labelFn(item)}</option>`)

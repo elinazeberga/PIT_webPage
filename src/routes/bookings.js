@@ -2,7 +2,6 @@ const express = require('express');
 const Booking = require('../models/booking');
 const Car = require('../models/car');
 const { authenticateUser } = require('../middleware/auth');
-
 const router = express.Router();
 
 // Get all bookings (admin only)
@@ -56,8 +55,8 @@ router.post('/', async (req, res) => {
 
         // Create a booking
         const booking = new Booking({
-            user: userId,
-            car: carId,
+            user,
+            car,
             reservationDate: new Date(),
             rentalStartDate,
             rentalEndDate,
@@ -70,6 +69,24 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: 'Error creating booking', error: err });
+    }
+});
+
+router.put('/alter', async (req, res) => {
+    const { id, ...updates } = req.body; // Extract ID and other updates from the request body
+    if (!id) {
+        console.log(id);
+        return res.status(400).send({ message: 'ID is required to update booking information' });
+    }
+    try {
+        const updatedBooking = await Booking.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        if (!updatedBooking) {
+            return res.status(404).send({ message: 'Booking not found' });
+        }
+        res.send({ message: 'Booking updated successfully', Booking: updatedBooking });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: 'Error updating Booking', error: err });
     }
 });
 
