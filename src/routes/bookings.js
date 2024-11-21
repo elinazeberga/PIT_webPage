@@ -67,7 +67,6 @@ router.post('/', authenticateAdmin, async (req, res) => {
         await booking.save();
         res.status(201).send({ message: 'Booking created successfully', booking });
     } catch (err) {
-        console.log(err);
         res.status(500).send({ message: 'Error creating booking', error: err });
     }
 });
@@ -75,7 +74,6 @@ router.post('/', authenticateAdmin, async (req, res) => {
 router.put('/alter', authenticateAdmin, async (req, res) => {
     const { id, ...updates } = req.body; // Extract ID and other updates from the request body
     if (!id) {
-        console.log(id);
         return res.status(400).send({ message: 'ID is required to update booking information' });
     }
     try {
@@ -85,7 +83,6 @@ router.put('/alter', authenticateAdmin, async (req, res) => {
         }
         res.send({ message: 'Booking updated successfully', Booking: updatedBooking });
     } catch (err) {
-        console.log(err);
         res.status(500).send({ message: 'Error updating Booking', error: err });
     }
 });

@@ -21,7 +21,6 @@ form.addEventListener('submit', function(event) {
         rentalEndDate: new Date(formData.reservationEnd + 'Z'),
         status: formData.status
     };
-    console.log(data);
     if (id == 'new') {
       fetch('/api/bookings', {
         method: 'post',

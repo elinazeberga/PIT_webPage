@@ -15,7 +15,6 @@ form.addEventListener('submit', function(event) {
       amount: formData.amount,
       status: formData.status, 
     };
-    console.log(data);
     if (id == 'new') {
       fetch('/api/payments', {
         method: 'post',

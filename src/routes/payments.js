@@ -41,7 +41,6 @@ router.post('/', async (req, res) => {
         await payment.save();
         res.status(201).send({ message: 'Payment created successfully', payment });
     } catch (err) {
-        console.log(err);
         res.status(500).send({ message: 'Error creating payment', error: err });
     }
 });

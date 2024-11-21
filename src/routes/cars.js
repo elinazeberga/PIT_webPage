@@ -22,7 +22,6 @@ router.post('/', authenticateAdmin, async (req, res) => {
         await car.save();
         res.status(201).send({ message: 'Car added successfully', car });
     } catch (err) {
-        console.log(err);
         res.status(500).send({ message: 'Error adding car', error: err });
     }
 });
