@@ -28,8 +28,17 @@ function getPageInfo() {
 }
 
 function fetchContent(pageInfo) {
-  fetch(`/api/admin/page/${pageInfo[0]}/${pageInfo[1]}`)
+  fetch(`/api/admin/page/${pageInfo[0]}/${pageInfo[1]}`, {
+    method: "get",
+    headers: {
+      "Authorization": `Bearer ${sessionStorage.getItem('jwtToken')}`
+    }
+  })
   .then(response => {
+    if (response.status === 401) {
+      alert("You are not logged in");
+      window.location.href = '/admin';
+    }
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
@@ -52,5 +61,9 @@ function fetchContent(pageInfo) {
     });
 };
 
+function signout() {
+  sessionStorage.removeItem('jwtToken');
+  window.location.href = '/admin';
+}
 const pageInfo = getPageInfo();
 fetchContent(pageInfo);

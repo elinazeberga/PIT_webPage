@@ -3,9 +3,10 @@ const pages = require('../pages/pages');
 const pageLoading = '../middleware/pageLoading.js';
 const {loadPage} = require(pageLoading);
 const router = express.Router();
+const { authenticateAdmin } = require('../middleware/auth');
 
 // Return page content (base)
-router.get('/page/:page/:param', async (req, res) => {
+router.get('/page/:page/:param', authenticateAdmin, async (req, res) => {
     const page = req.params.page;
     const param = req.params.param;
     if (pages[page]) {

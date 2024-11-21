@@ -3,23 +3,23 @@ const content = document.getElementById('content');
 function handleLogin(event) {
     event.preventDefault();
   
-    const username = document.getElementById('login-username').value;
+    const email = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
-    window.location.href = '/admin/main';
     fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     })
       .then(response => response.json())
       .then(data => {
         if (data.token) {
           alert('Login successful!');
-          window.location.href = '/admin/main';
+          sessionStorage.setItem('jwtToken', data.token);
+          window.location.href = '/admin/home';
         } else {
-          alert('Login failed! Check your username and password.');
+          alert('Login failed! Check your email and password.');
         }
       })
       .catch(error => {

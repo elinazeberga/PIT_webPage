@@ -1,11 +1,11 @@
 const express = require('express');
 const Payment = require('../models/payment');
 const { update } = require('../models/user');
-
+const { authenticateAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 // Get all payments (admin only)
-router.get('/', async (req, res) => {
+router.get('/', authenticateAdmin, async (req, res) => {
     try {
         const payments = await Payment.find().populate('booking');
         res.send(payments);
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/alter', async (req, res) => {
+router.put('/alter', authenticateAdmin, async (req, res) => {
     const { id, ...updates } = req.body; // Extract ID and other updates from the request body
     if (!id) {
         return res.status(400).send({ message: 'ID is required to update payment information' });

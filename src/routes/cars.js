@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new car (admin only)
-router.post('/', async (req, res) => {
+router.post('/', authenticateAdmin, async (req, res) => {
     try {
         const { make, model, registrationNumber, type, fuelType, gearboxType, year, pricePerDay, status, images, notes} = req.body;
         const car = new Car({ make, model, registrationNumber, type, fuelType, gearboxType, year, pricePerDay, status, images, notes });
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/alter', async (req, res) => {
+router.put('/alter', authenticateAdmin, async (req, res) => {
     const { id, ...updates } = req.body; // Extract ID and other updates from the request body
     if (!id) {
         return res.status(400).send({ message: 'ID is required to update car information' });

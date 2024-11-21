@@ -1,7 +1,7 @@
 const express = require('express');
 const Booking = require('../models/booking');
 const Car = require('../models/car');
-const { authenticateUser } = require('../middleware/auth');
+const { authenticateUser, authenticateAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 // Get all bookings (admin only)
@@ -40,7 +40,7 @@ router.get('/:id', authenticateUser, async (req, res) => {
 });
 
 // Create a new booking
-router.post('/', async (req, res) => {
+router.post('/', authenticateAdmin, async (req, res) => {
     try {
         const { userId, carId, rentalStartDate, rentalEndDate, status } = req.body;
         
@@ -72,7 +72,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/alter', async (req, res) => {
+router.put('/alter', authenticateAdmin, async (req, res) => {
     const { id, ...updates } = req.body; // Extract ID and other updates from the request body
     if (!id) {
         console.log(id);
