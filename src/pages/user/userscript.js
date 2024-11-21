@@ -28,7 +28,8 @@ form.addEventListener('submit', function(event) {
       fetch('/api/auth/register', {
         method: 'post',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${sessionStorage.getItem('jwtToken')}`
         },
         body: JSON.stringify(data)
       })
@@ -50,7 +51,8 @@ form.addEventListener('submit', function(event) {
       fetch('/api/auth/alter', {
         method: 'put',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${sessionStorage.getItem('jwtToken')}`
         },
         body: JSON.stringify(filteredData)
       })

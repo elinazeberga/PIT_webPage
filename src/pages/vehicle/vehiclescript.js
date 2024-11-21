@@ -27,7 +27,8 @@ form.addEventListener('submit', function(event) {
       fetch('/api/cars', {
         method: 'post',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${sessionStorage.getItem('jwtToken')}`
         },
         body: JSON.stringify(data)
       })
@@ -50,7 +51,8 @@ form.addEventListener('submit', function(event) {
       fetch('/api/cars/alter', {
         method: 'put',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${sessionStorage.getItem('jwtToken')}`
         },
         body: JSON.stringify(filteredData)
       })
