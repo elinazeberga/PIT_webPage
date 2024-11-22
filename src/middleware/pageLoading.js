@@ -3,7 +3,7 @@ const bookingModel = require('../models/booking');
 const userModel = require('../models/user');
 const pages = require('../pages/pages');
 const paymentModel = require('../models/payment');
-const fs = require('fs').promises;  // Using fs.promises for async file reading
+const fs = require('fs').promises;
 
 const DEFAULT_FIELDS = {
     vehicle: {
@@ -40,12 +40,11 @@ const DEFAULT_FIELDS = {
 
 async function loadPage(page, param){
     try {
-        const pagePath = pages[page]; // Get template path
+        const pagePath = pages[page];
         if (!pagePath) {
             throw new Error(`Invalid page: ${page}`);
         }
-
-        const htmlTemplate = await fs.readFile(pagePath, 'utf-8'); // Load template
+        const htmlTemplate = await fs.readFile(pagePath, 'utf-8');
         return await processPage(page, htmlTemplate, param);
     } catch (error) {
         console.error(`Error loading page: ${page}`, error);
@@ -54,28 +53,29 @@ async function loadPage(page, param){
 }
 
 async function processPage(page, template, param) {
+    const navigationPane = await fs.readFile(pages['navigation'], 'utf-8');
     const pageHandlers = {
-        catalogue: async () => [template.replace('{{tableData}}', await loadCatalogue())],
+        catalogue: async () => [navigationPane, template.replace('{{tableData}}', await loadCatalogue())],
         vehicle: async () => {
             const vehicleScript = await fs.readFile(pages['vehiclescript'], 'utf-8');
-            return [await loadVehicle(template, param), vehicleScript];
+            return [navigationPane, await loadVehicle(template, param), vehicleScript];
         },
-        reservations: async () => [template.replace('{{tableData}}', await loadReservations())],
+        reservations: async () => [navigationPane, template.replace('{{tableData}}', await loadReservations())],
         reservation: async () => {
             const reservationScript = await fs.readFile(pages['reservationscript'], 'utf-8');
-            return [await loadReservation(template, param), reservationScript];
+            return [navigationPane, await loadReservation(template, param), reservationScript];
         },
-        users: async () => [template.replace('{{tableData}}', await loadUsers())],
+        users: async () => [navigationPane, template.replace('{{tableData}}', await loadUsers())],
         user: async () => {
             const userScript = await fs.readFile(pages['userscript'], 'utf-8');
-            return [await loadUser(template, param), userScript];
+            return [navigationPane, await loadUser(template, param), userScript];
         },
-        payments: async () => [template.replace('{{tableData}}', await loadPayments())],
+        payments: async () => [navigationPane, template.replace('{{tableData}}', await loadPayments())],
         payment: async () => {
             const paymentScript = await fs.readFile(pages['paymentscript'], 'utf-8');
-            return [await loadPayment(template, param), paymentScript];
+            return [navigationPane, await loadPayment(template, param), paymentScript];
         },
-        home: async() => [template]
+        home: async() => [navigationPane, template]
     };
 
     const handler = pageHandlers[page];

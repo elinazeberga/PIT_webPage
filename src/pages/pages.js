@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = {
     home: path.join(__dirname, 'home.html'),
+    navigation: path.join(__dirname, 'nav.html'),
 
     reservations: path.join(__dirname, 'reservation', 'reservation-list.html'),
     reservation: path.join(__dirname, 'reservation', 'reservation.html'),

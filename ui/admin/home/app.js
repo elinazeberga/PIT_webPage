@@ -1,20 +1,9 @@
 const adminNavigationPane = document.getElementById('navigation');
 const content = document.getElementById('content');
 
-
 // Authenticate user
 // After auth fetch content
 // Otherwise kick out
-
-adminNavigationPane.innerHTML = `
-  <ul>
-    <li><a href="/admin/home">Home</a></li>
-    <li><a href="/admin/home/catalogue">Cars</a></li>
-    <li><a href="/admin/home/reservations">Reservations</a></li>
-    <li><a href="/admin/home/users">Users</a></li>
-    <li><a href="/admin/home/payments">Payments</a></li>
-    <li><a href="#" onclick="signout()">Sign out</a></li>
-  </ul>`;
 
 function getPageInfo() {
   const pathname = window.location.pathname;
@@ -36,7 +25,6 @@ function fetchContent(pageInfo) {
   })
   .then(response => {
     if (response.status === 401) {
-      alert("You are not logged in");
       window.location.href = '/admin';
     }
     if (!response.ok) {
@@ -45,7 +33,8 @@ function fetchContent(pageInfo) {
     return response.json();
     })
     .then(response => {
-      const [htmlContent, scriptContent] = response;
+      const [navigationPane, htmlContent, scriptContent] = response;
+        adminNavigationPane.innerHTML = navigationPane;
         content.innerHTML = htmlContent;
         if (scriptContent != undefined) {
           const scriptElement = document.createElement('script');
@@ -65,5 +54,6 @@ function signout() {
   sessionStorage.removeItem('jwtToken');
   window.location.href = '/admin';
 }
+
 const pageInfo = getPageInfo();
 fetchContent(pageInfo);
