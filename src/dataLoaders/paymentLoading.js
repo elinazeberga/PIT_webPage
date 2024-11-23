@@ -2,7 +2,7 @@ const bookingModel = require('../models/booking');
 const paymentModel = require('../models/payment');
 const DEFAULT_FIELDS = require('../constants/defaultFields');
 const createPaymentTableRow = require('../renderers/paymentRenderer');
-const {processSelectFields, replaceTemplateFields} = require('../renderers/rendererUtils');
+const {processSelectFields, replaceTemplateFields, createSelectOptions} = require('../renderers/rendererUtils');
 
 async function loadPayments() {
     try {
@@ -15,11 +15,16 @@ async function loadPayments() {
 
 async function loadPayment(template, param) {
     try {
+        const bookingCount = await bookingModel.countDocuments({});
         const bookings = await bookingModel.find();
 
-        template = createSelectOptions(template, bookings, 'bookingList', booking => 
-            `${booking._id}`
-        );
+        if (bookingCount !== 0) {
+            template = createSelectOptions(template, bookings, 'bookingList', booking => 
+                `${booking._id}`
+            );
+        } else {
+            template = template.replace('{{bookingList}}', '<option value="None">No bookings exist</option>');
+        }
 
         if (param === 'new') {
             return replaceTemplateFields(template, DEFAULT_FIELDS.payment);
@@ -37,7 +42,7 @@ async function loadPayment(template, param) {
         template = processSelectFields(template, payment, ['status', 'booking']);
         return replaceTemplateFields(template, fields);
     } catch (err) {
-        throw new Error('Error fetching booking');
+        throw new Error('Error fetching bookings');
     }
 }
 

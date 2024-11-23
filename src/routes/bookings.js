@@ -1,6 +1,7 @@
 const express = require('express');
 const Booking = require('../models/booking');
 const Car = require('../models/car');
+const Payment = require('../')
 const { authenticateUser, authenticateAdmin } = require('../middleware/auth');
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.get('/', authenticateUser, async (req, res) => {
     try {
         const bookings = await Booking.find().populate('user car');
-        res.send(bookings);
+        res.status(200).send(bookings);
     } catch (err) {
         res.status(500).send({ message: 'Error fetching bookings', error: err });
     }
@@ -19,7 +20,7 @@ router.get('/user/:userId', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.params;
         const bookings = await Booking.find({ user: userId }).populate('car');
-        res.send(bookings);
+        res.status(200).send(bookings);
     } catch (err) {
         res.status(500).send({ message: 'Error fetching user bookings', error: err });
     }
@@ -33,14 +34,14 @@ router.get('/:id', authenticateUser, async (req, res) => {
         if (!booking) {
             return res.status(404).send({ message: 'Booking not found' });
         }
-        res.send(booking);
+        res.status(200).send(booking);
     } catch (err) {
         res.status(500).send({ message: 'Error fetching booking', error: err });
     }
 });
 
 // Create a new booking
-router.post('/', authenticateAdmin, async (req, res) => {
+router.post('/create', authenticateAdmin, async (req, res) => {
     try {
         const { userId, carId, rentalStartDate, rentalEndDate, status } = req.body;
         
@@ -55,7 +56,7 @@ router.post('/', authenticateAdmin, async (req, res) => {
 
         // Create a booking
         const booking = new Booking({
-            user,
+            user: userId,
             car,
             reservationDate: new Date(),
             rentalStartDate,
@@ -81,9 +82,22 @@ router.put('/alter', authenticateAdmin, async (req, res) => {
         if (!updatedBooking) {
             return res.status(404).send({ message: 'Booking not found' });
         }
-        res.send({ message: 'Booking updated successfully', Booking: updatedBooking });
+        res.status(200).send({ message: 'Booking updated successfully', Booking: updatedBooking });
     } catch (err) {
         res.status(500).send({ message: 'Error updating Booking', error: err });
+    }
+});
+
+router.delete('/delete', authenticateAdmin, async (req, res) => {
+    try {
+        const {id} = req.body;
+        const result = await Booking.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).send({ message: 'Booking not found' });
+        }
+        res.status(200).send({ message: 'Booking deleted successfully'});
+    } catch (err) {
+        res.status(500).send({ message: 'Error deleting booking', error: err });
     }
 });
 

@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new car (admin only)
-router.post('/', authenticateAdmin, async (req, res) => {
+router.post('/create', authenticateAdmin, async (req, res) => {
     try {
         const { make, model, registrationNumber, type, fuelType, gearboxType, year, pricePerDay, status, images, notes} = req.body;
         const car = new Car({ make, model, registrationNumber, type, fuelType, gearboxType, year, pricePerDay, status, images, notes });
@@ -42,4 +42,16 @@ router.put('/alter', authenticateAdmin, async (req, res) => {
     }
 });
 
+router.delete('/delete', authenticateAdmin, async (req, res) => {
+    try {
+        const {id} = req.body;
+        const result = await Car.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).send({ message: 'Car not found' });
+        }
+        res.status(200).send({ message: 'Car deleted successfully'});
+    } catch (err) {
+        res.status(500).send({ message: 'Error deleting car', error: err });
+    }
+});
 module.exports = router;

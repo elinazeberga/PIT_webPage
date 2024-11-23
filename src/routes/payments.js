@@ -29,7 +29,7 @@ router.get('/booking/:bookingId', async (req, res) => {
 });
 
 // Create a new payment
-router.post('/', async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const { bookingId, amount, status } = req.body;
         const payment = new Payment({
@@ -58,6 +58,19 @@ router.put('/alter', authenticateAdmin, async (req, res) => {
         res.send({ message: 'Payment updated successfully', car: updatedPayment });
     } catch (err) {
         res.status(500).send({ message: 'Error updating payment', error: err });
+    }
+});
+
+router.delete('/delete', authenticateAdmin, async (req, res) => {
+    try {
+        const {id} = req.body;
+        const result = await Payment.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).send({ message: 'Payment not found' });
+        }
+        res.status(200).send({ message: 'Payment deleted successfully'});
+    } catch (err) {
+        res.status(500).send({ message: 'Error deleting payment', error: err });
     }
 });
 
