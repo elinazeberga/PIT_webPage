@@ -17,7 +17,7 @@ const authenticateUser = (req, res, next) => {
 
 const authenticateAdmin = (req, res, next) => {
     authenticateUser(req, res, () => {
-        if (req.userRole !== 'admin') {
+        if (req.userRole !== 'Admin') {
             return res.status(403).send({ message: 'Admin access required' });
         }
         next();

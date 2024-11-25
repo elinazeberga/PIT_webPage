@@ -1,0 +1,59 @@
+<div>
+    <h2>Vehicle information</h2>
+    <p>ID: {{vehicleID}}</p>
+    <form id="newVehicleForm">
+        <label for="make">Make</label><br>
+        <input type="text" name="make" placeholder="{{vehicleMake}}"><br><br>
+
+        <label for="model">Model</label><br>
+        <input type="text" name="model" placeholder="{{vehicleModel}}"><br><br>
+
+        <label for="regNr">Registration Nr.</label><br>
+        <input type="text" name="regNr" placeholder="{{vehicleRegNr}}"><br><br>
+
+        <label for="type">Car type</label><br>
+        <select name="type">
+            <option value="Compact">Compact</option>
+            <option value="Estate">Estate</option>
+            <option value="Sedan">Sedan</option>
+            <option value="SUV">SUV</option>
+            <option value="Luxury">Luxury</option>
+        </select><br><br>
+
+        <label for="fuelType">Fuel type</label><br>
+        <select name="fuelType">
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Electric">Electric</option>
+        </select><br><br>
+
+        <label for="gearboxType">Gearbox type</label><br>
+        <select name="gearboxType">
+            <option value="Manual">Manual</option>
+            <option value="Automatic">Automatic</option>
+        </select><br><br>
+
+        <label for="year">Vehicle year</label><br>
+        <input type="number" name="year" placeholder="{{vehicleYear}}"><br><br>
+
+        <label for="price">Vehicle price per day</label><br>
+        <input type="number" name="price" placeholder="{{vehiclePrice}}"><br><br>
+
+        <label for="status">Status</label><br>
+        <select name="status">
+            <option value="Available">Available</option>
+            <option value="In Use">In Use</option>
+            <option value="In Service">In Service</option>
+            <option value="Requires Inspection">Requires Inspection</option>
+        </select><br><br>
+
+        <label for="notes">Notes</label><br>
+        <input type="text" name="notes" placeholder="{{vehicleNotes}}"><br><br>
+
+        <label for="image">Images (separate by comma)</label><br>
+        <input type="text" name="image" value="{{vehicleImages}}"><br><br>
+        
+        <button type="submit">Submit</button><br>
+    </form>
+    <button type="delete" onclick="deleteEntry()">Delete</button><br>
+</div>

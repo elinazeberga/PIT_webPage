@@ -1,0 +1,38 @@
+<div>
+    <h2>Reservation information</h2>
+    <p>ID: {{reservationID}}</p>
+    <form id="newReservationForm">
+        <label for="renter">Renter</label><br>
+        <select name="renter">
+            {{renterList}}
+            {{selfRenter}}
+        </select><br><br>
+
+        <label for="vehicle">Vehicle</label><br>
+        <select name="vehicle">
+            {{vehicleList}}
+            {{selfVehicle}}
+        </select><br><br>
+
+        <label for="reservationStart">Pickup time</label><br>
+        <input type="datetime-local" name="reservationStart" value="{{reservationStart}}"><br><br>
+        
+        <label for="reservationEnd">Return time</label><br>
+        <input type="datetime-local" name="reservationEnd" value="{{reservationEnd}}"><br><br>
+
+        <label for="price">Total price</label><br>
+        <input type="number" name="price" placeholder="{{reservationPrice}}"><br><br>
+
+        <label for="status">Status</label><br>
+        <select name="status">
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="In-Progress">In-Progress</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Completed">Completed</option>
+        </select><br><br>
+        
+        <button type="submit">Submit</button><br>
+    </form>
+    <button onclick="deleteEntry()">Delete</button><br>
+</div>

@@ -1,0 +1,42 @@
+<div>
+    <h2>User information</h2>
+    <p>ID: {{userID}}</p>
+    <form id="newUserForm">
+        <label for="name">Name</label><br>
+        <input type="text" name="name" placeholder="{{userName}}"><br><br>
+
+        <label for="surname">Surname</label><br>
+        <input type="text" name="surname" placeholder="{{userSurname}}"><br><br>
+
+        <label for="email">E-mail address</label><br>
+        <input type="text" name="email" placeholder="{{userEmail}}"><br><br>
+
+        <label for="phone">Phone number</label><br>
+        <input type="text" name="phone" placeholder="{{userPhone}}"><br><br>
+
+        <label for="role">User role</label><br>
+        <select name="role">
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+        </select><br><br>
+
+        <label for="loyalty">Loyalty status</label><br>
+        <select name="loyalty">
+            <option value="Bronze">Bronze</option>
+            <option value="Silver">Silver</option>
+            <option value="Gold">Gold</option>
+        </select><br><br>
+
+        <label for="license">License number</label><br>
+        <input type="text" name="license" placeholder="{{userLicense}}"><br><br>
+
+        <label for="password">New password</label><br>
+        <input type="password" name="password"><br><br>
+
+        <label for="passwordConfirmation">Confirm password</label><br>
+        <input type="password" name="passwordConfirmation"><br><br>
+        
+        <button type="submit">Submit</button><br>
+    </form>
+    <button type="delete" onclick="deleteEntry()">Delete</button><br>
+</div>

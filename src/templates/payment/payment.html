@@ -1,0 +1,25 @@
+<div>
+    <h2>Payment information</h2>
+    <p>ID: {{paymentID}}</p>
+    <form id="newPaymentForm">
+        <label for="booking">Booking</label><br>
+        <select name="booking">
+            {{bookingList}}
+            {{selfBooking}}
+        </select><br><br>
+
+        <label for="amount">Payment amount</label><br>
+        <input type="number" name="amount" placeholder="{{paymentAmount}}"><br><br>
+
+        <label for="status">Status</label><br>
+        <select name="status">
+            <option value="Successful">Successful</option>
+            <option value="Failed">Failed</option>
+            <option value="Pending">Pending</option>
+        </select><br><br>
+
+        <p>Date: {{paymentDate}}</p><br><br>
+        
+        <button type="submit">Submit</button><br>
+    </form>
+</div>

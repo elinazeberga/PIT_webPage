@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const carRoutes = require('./routes/cars');
 const bookingRoutes = require('./routes/bookings');
 const paymentRoutes = require('./routes/payments');
+const adminRoutes = require('./routes/admin');
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/admin', adminRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
     // Start the server
