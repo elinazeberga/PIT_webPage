@@ -1,4 +1,3 @@
-// pages.js
 const path = require('path');
 
 module.exports = {

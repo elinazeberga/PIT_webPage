@@ -15,10 +15,13 @@ function replaceTemplateFields(template, fields) {
     }, template);
 }
 
-function createSelectOptions(template, items, placeholder, labelFn) {
-    const options = items
+function createSelectOptions(template, selfField, items, placeholder, labelFn) {
+    let options = items
         .map(item => `<option value="${item._id}">${labelFn(item)}</option>`)
         .join('');
+    if (selfField !== null && !options.includes(selfField)){
+        options += `<option value="${selfField}">Deleted: ${selfField}</option>`;
+    }
     return template.replace(`{{${placeholder}}}`, options);
 }
 

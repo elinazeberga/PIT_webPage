@@ -26,36 +26,68 @@ async function loadReservations() {
 
 async function loadReservation(template, param) {
     try {
+        const [usersCount, vehiclesCount] = await Promise.all([
+            userModel.countDocuments({}),
+            carModel.countDocuments({})
+        ]);
+
         const [users, vehicles] = await Promise.all([
             userModel.find(),
             carModel.find()
         ]);
-
-        template = createSelectOptions(template, users, 'renterList', user => 
-            `${user.email} - ${user.name} ${user.lastName}`
-        );
-
-        template = createSelectOptions(template, vehicles, 'vehicleList', vehicle => 
-            `${vehicle.registrationNumber} - ${vehicle.make} ${vehicle.model}`
-        );
-
-        if (param === 'new') {
-            return replaceTemplateFields(template, DEFAULT_FIELDS.reservation);
+        
+        let reservation = null;
+        if (param !== 'new') {
+            reservation = await bookingModel.findById(param);
+            if (!reservation) {
+                throw new Error('Reservation not found');
+            }
+        }
+    
+        if (usersCount !== 0 || param !== 'new') {
+            template = createSelectOptions(template,
+                reservation ? reservation.user.toString() : null,
+                users,
+                'renterList',
+                user => 
+                `${user.email} - ${user.name} ${user.lastName}`
+            );    
+        } else {
+            template = template.replace(
+                '{{renterList}}', 
+                `<option value="None">No users exist</option>`
+            );
+        }
+    
+        if (vehiclesCount !== 0 || param !== 'new') {
+            template = createSelectOptions(template,
+                reservation ? reservation.vehicle.toString() : null,
+                vehicles,
+                'vehicleList',
+                vehicle => 
+                `${vehicle.registrationNumber} - ${vehicle.make} ${vehicle.model}`
+            );    
+        } else {
+            template = template.replace(
+                '{{vehicleList}}', 
+                `<option value="None">No vehicles exist</option>`
+            );
         }
 
-        const reservation = await bookingModel.findById(param);
-        if (!reservation) {
-            throw new Error('Reservation not found');
+        const fields = param === 'new' 
+            ? DEFAULT_FIELDS.reservation
+            : {
+                reservationID: param,
+                reservationDate: parseDate(reservation.reservationDate),
+                reservationStart: parseDate(reservation.rentalStartDate),
+                reservationEnd: parseDate(reservation.rentalEndDate),
+                reservationPrice: reservation.totalPrice
+            };
+    
+        if (reservation) {
+            template = processSelectFields(template, reservation, ['status', 'user', 'car']);
         }
-
-        const fields = {
-            reservationID: param,
-            reservationDate: parseDate(reservation.reservationDate),
-            reservationStart: parseDate(reservation.rentalStartDate),
-            reservationEnd: parseDate(reservation.rentalEndDate),
-            reservationPrice: reservation.totalPrice
-        };
-        template = processSelectFields(template, reservation, ['status', 'user', 'car']);
+    
         return replaceTemplateFields(template, fields);
     } catch (error) {
         throw new Error(`Failed to load reservation: ${error.message}`);

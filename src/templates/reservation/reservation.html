@@ -5,11 +5,13 @@
         <label for="renter">Renter</label><br>
         <select name="renter">
             {{renterList}}
+            {{selfRenter}}
         </select><br><br>
 
         <label for="vehicle">Vehicle</label><br>
         <select name="vehicle">
             {{vehicleList}}
+            {{selfVehicle}}
         </select><br><br>
 
         <label for="reservationStart">Pickup time</label><br>
@@ -32,4 +34,5 @@
         
         <button type="submit">Submit</button><br>
     </form>
+    <button onclick="deleteEntry()">Delete</button><br>
 </div>
