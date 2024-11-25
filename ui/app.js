@@ -72,11 +72,11 @@ function attachFormHandlers() {
       if (response.ok) {
         localStorage.setItem('token', result.token);
         localStorage.setItem('userId', result.userId);
-        alert('Login successful!');
+        alert('Pieslēgšanāš veiksmīga!'); // TODO: Change to html element, text popup
         navigate('home');
         location.reload();
       } else {
-        alert('Error logging in: ' + result.message);
+        alert('Kļūda pieslēgties: ' + result.message); // TODO: Change to html element, text popup
       }
     });
   }
@@ -101,10 +101,10 @@ function attachFormHandlers() {
 
       const result = await response.json();
       if (response.ok) {
-        alert('Registration successful!');
+        alert('Reģistrācija veiksmīga!'); // TODO: Change to html element, text popup
         navigate('login');
       } else {
-        alert('Error registering: ' + result.message);
+        alert('Kļūda reģistrēties: ' + result.message); // TODO: Change to html element, text popup
       }
     });
   }
@@ -123,8 +123,8 @@ function loadCarList() {
         carElement.innerHTML = `
           <h2>${car.make} ${car.model}</h2>
           <p>ID: ${car._id}</p>
-          <p>Price per day: $${car.pricePerDay}</p>
-          <button onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Book This Car</button>
+          <p>Cena dienā: $${car.pricePerDay}</p>
+          <button onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Rezervēt auto</button>
         `;
         carList.appendChild(carElement);
       });
@@ -145,7 +145,7 @@ function attachBookingFormHandler(payload = null) {
     const token = localStorage.getItem('token');
 
     if (!token || !userId) {
-      alert('You must be logged in to book a car.');
+      alert('Nepieciešams pieslēgties, lai rezervētu auto.'); // TODO: Change to html element, text popup
       navigate('login');
       return;
     }
@@ -165,10 +165,10 @@ function attachBookingFormHandler(payload = null) {
         bookingId: result.booking._id,
         bookingTotalPrice: result.booking.totalPrice
       }
-      alert('Booking successful!');
+      alert('Rezervācija veiksmīga!'); // TODO: Change to html element, text popup
       navigate('payment', payload);
     } else {
-      alert('Error creating booking: ' + result.message);
+      alert('Kļūda rezervācijas veikšanā: ' + result.message); // TODO: Change to html element, text popup
     }
   });
 }
@@ -183,7 +183,7 @@ function attachPaymentFormHandler(payload = null) {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      alert('You must be logged in to make a payment.');
+      alert('You must be logged in to make a payment.'); // TODO: Change to html element, text popup
       navigate('login');
       return;
     }
@@ -202,10 +202,10 @@ function attachPaymentFormHandler(payload = null) {
 
     const result = await response.json();
     if (response.ok) {
-      alert('Payment successful!');
+      alert('Maksājums veiksmīgs!'); // TODO: Change to html element, text popup
       navigate('home');
     } else {
-      alert('Error processing payment: ' + result.message);
+      alert('Kļūda maksājuma apstrādē: ' + result.message); // TODO: Change to html element, text popup
     }
   });
 }
