@@ -6,7 +6,7 @@ const { authenticateUser, authenticateAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 // Get all bookings (admin only)
-router.get('/', authenticateUser, async (req, res) => {
+router.get('/', authenticateAdmin, async (req, res) => {
     try {
         const bookings = await Booking.find().populate('user car');
         res.status(200).send(bookings);
@@ -41,7 +41,7 @@ router.get('/:id', authenticateUser, async (req, res) => {
 });
 
 // Create a new booking
-router.post('/create', authenticateAdmin, async (req, res) => {
+router.post('/create', authenticateUser, async (req, res) => {
     try {
         const { userId, carId, rentalStartDate, rentalEndDate, status } = req.body;
         
@@ -72,7 +72,7 @@ router.post('/create', authenticateAdmin, async (req, res) => {
     }
 });
 
-router.put('/alter', authenticateAdmin, async (req, res) => {
+router.put('/alter', authenticateUser, async (req, res) => {
     const { id, ...updates } = req.body; // Extract ID and other updates from the request body
     if (!id) {
         return res.status(400).send({ message: 'ID is required to update booking information' });
@@ -88,7 +88,7 @@ router.put('/alter', authenticateAdmin, async (req, res) => {
     }
 });
 
-router.delete('/delete', authenticateAdmin, async (req, res) => {
+router.delete('/delete', authenticateUser, async (req, res) => {
     try {
         const {id} = req.body;
         const result = await Booking.findByIdAndDelete(id);

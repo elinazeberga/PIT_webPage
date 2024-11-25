@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
-let mongoServer;
 
 beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-
     mongoose.set('strictQuery', true); // Set the strictQuery option
 
-    await mongoose.connect(uri, {
+    await mongoose.connect(process.env.TEST_DB_NAME, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
@@ -18,9 +12,6 @@ beforeAll(async () => {
 afterAll(async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
-    if (mongoServer) {
-        await mongoServer.stop();
-    }
 });
 
 afterEach(async () => {
