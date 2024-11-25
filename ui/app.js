@@ -1,130 +1,211 @@
-const content = document.getElementById('content');
+function injectHTML(url, elementId, callback = null) {
+  fetch(url)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById(elementId).innerHTML = data;
+      if (callback) callback();
+    })
+    .catch(err => console.error(`Error fetching ${url}:`, err));
+}
 
-function navigate(page) {
-  switch(page) {
-    case 'home':
-      renderHome();
-      break;
-    case 'car-catalog':
-      renderCarCatalog();
-      break;
-    case 'login':
-      renderLogin();
-      break;
-    case 'register':
-      renderRegister();
-      break;
-    default:
-      renderHome();
+document.addEventListener('DOMContentLoaded', () => {
+  injectHTML('components/nav.html', 'nav-placeholder');
+  injectHTML('components/footer.html', 'footer-placeholder');
+
+  const initialPage = 'home';
+  navigate(initialPage);
+
+  checkLoginStatus();
+});
+
+function handleLogout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userId');
+  navigate('home');
+  location.reload();
+};
+
+function checkLoginStatus() {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    injectHTML('components/nav-token.html', 'nav-placeholder', () => {
+      const logout = document.getElementById('logout');
+      if (logout) {
+        logout.addEventListener('click', handleLogout);
+      } else {
+        console.error('Logout element not found');
+      }
+    });
   }
 }
 
-function renderHome() {
-  content.innerHTML = `
-    <h1>Welcome to the Car Rental System</h1>
-  `;
+function navigate(page, payload = null) {
+  injectHTML(`pages/${page}.html`, 'content', () => {
+    if (page === 'car-list') {
+      loadCarList();
+    } else if (page === 'booking') {
+      attachBookingFormHandler(payload);
+    } else if (page === 'payment') {
+      attachPaymentFormHandler(payload);
+    } else if (page === 'login' || page === 'register') {
+      attachFormHandlers();
+    }
+  });
 }
 
-function renderCarCatalog() {
-  fetch('/api/cars')
-    .then(response => response.json())
-    .then(cars => {
-      let carHtml = cars.map(car => `
-        <div class="car-card">
-          <h3>${car.make} ${car.model}</h3>
-          <p>Year: ${car.year}</p>
-          <p>Price per day: $${car.pricePerDay}</p>
-        </div>
-      `).join('');
+function attachFormHandlers() {
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-      content.innerHTML = `
-        <h1>Car Catalog</h1>
-        ${carHtml}
-      `;
-    })
-    .catch(error => {
-      console.error('Error fetching car data:', error);
-      content.innerHTML = '<p>Failed to load car catalog.</p>';
-    });
-}
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-function renderLogin() {
-  content.innerHTML = `
-    <h1>Login</h1>
-    <form onsubmit="handleLogin(event)">
-      <input type="text" id="login-username" placeholder="Username" required>
-      <input type="password" id="login-password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-  `;
-}
-
-function handleLogin(event) {
-  event.preventDefault();
-
-  const username = document.getElementById('login-username').value;
-  const password = document.getElementById('login-password').value;
-
-  fetch('/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, password }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.token) {
+      const result = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('userId', result.userId);
         alert('Login successful!');
         navigate('home');
+        location.reload();
       } else {
-        alert('Login failed! Check your username and password.');
+        alert('Error logging in: ' + result.message);
       }
-    })
-    .catch(error => {
-      console.error('Error logging in:', error);
-      alert('Login failed! An error occurred.');
     });
-}
+  }
 
-function renderRegister() {
-  content.innerHTML = `
-    <h1>Register</h1>
-    <form onsubmit="handleRegister(event)">
-      <input type="text" id="register-username" placeholder="Username" required>
-      <input type="password" id="register-password" placeholder="Password" required>
-      <button type="submit">Register</button>
-    </form>
-  `;
-}
+  const registerForm = document.getElementById('register-form');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const lastName = document.getElementById('lastName').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const licenseNr = document.getElementById('licenseNr').value;
+      // const loyalty = document.getElementById('loyalty').value || null;
+      const phone = document.getElementById('phone').value;
 
-function handleRegister(event) {
-  event.preventDefault();
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, lastName, email, password, licenseNr, phone })
+      });
 
-  const username = document.getElementById('register-username').value;
-  const password = document.getElementById('register-password').value;
-
-  fetch('/api/auth/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, password }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.message) {
+      const result = await response.json();
+      if (response.ok) {
         alert('Registration successful!');
         navigate('login');
       } else {
-        alert('Registration failed!');
+        alert('Error registering: ' + result.message);
       }
-    })
-    .catch(error => {
-      console.error('Error registering:', error);
-      alert('Registration failed! An error occurred.');
     });
+  }
 }
 
-// Initialize the home page
-navigate('home');
+function loadCarList() {
+  fetch('/api/cars')
+    .then(response => response.json())
+    .then(data => {
+      const carList = document.getElementById('car-list');
+      carList.innerHTML = '';
+      data.forEach(car => {
+        let payload = {cardId: car._id};
+        const carElement = document.createElement('div');
+        carElement.className = 'car-item';
+        carElement.innerHTML = `
+          <h2>${car.make} ${car.model}</h2>
+          <p>ID: ${car._id}</p>
+          <p>Price per day: $${car.pricePerDay}</p>
+          <button onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Book This Car</button>
+        `;
+        carList.appendChild(carElement);
+      });
+    })
+    .catch(err => console.error('Error loading cars:', err));
+}
+
+function attachBookingFormHandler(payload = null) {
+  document.getElementById('carId').value = payload != null ? payload.cardId : null;
+
+  const bookingForm = document.getElementById('booking-form');
+  bookingForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const userId = localStorage.getItem('userId');
+    const carId = document.getElementById('carId').value;
+    const rentalStartDate = document.getElementById('rentalStartDate').value;
+    const rentalEndDate = document.getElementById('rentalEndDate').value;
+    const token = localStorage.getItem('token');
+
+    if (!token || !userId) {
+      alert('You must be logged in to book a car.');
+      navigate('login');
+      return;
+    }
+
+    const response = await fetch('/api/bookings/create', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ userId, carId, rentalStartDate, rentalEndDate, status: 'Pending' })
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      let payload = {
+        bookingId: result.booking._id,
+        bookingTotalPrice: result.booking.totalPrice
+      }
+      alert('Booking successful!');
+      navigate('payment', payload);
+    } else {
+      alert('Error creating booking: ' + result.message);
+    }
+  });
+}
+
+function attachPaymentFormHandler(payload = null) {
+  document.getElementById('bookingId').value = payload != null ? payload.bookingId : null;
+  document.getElementById('amount').value = payload != null ? payload.bookingTotalPrice : null;
+
+  const paymentForm = document.getElementById('payment-form');
+  paymentForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert('You must be logged in to make a payment.');
+      navigate('login');
+      return;
+    }
+  
+    const bookingId = document.getElementById('bookingId').value;
+    const amount = document.getElementById('amount').value;
+
+    const response = await fetch('/api/payments/create', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ bookingId, amount, status: 'Pending' })
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert('Payment successful!');
+      navigate('home');
+    } else {
+      alert('Error processing payment: ' + result.message);
+    }
+  });
+}
