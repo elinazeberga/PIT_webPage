@@ -21,7 +21,29 @@ function navigate(page) {
 
 function renderHome() {
   content.innerHTML = `
-    <h1>Welcome to the Car Rental System</h1>
+    <div class="main-page">
+        <section class="main-page__section1">
+            <div class="main-page__section1__content">
+                <h2 class="main-page__section1__content--heading1">Plašs automašīnu izīrēšanas klāsts un patīkamas cenas</h2>
+                <h2 class="main-page__section1__content--heading2">patīkamas cenas</h2>
+                <button class="main-page__section1__content--button" type="button">
+                    <p class="main-page__section1__content--button-text">Izvēlies automašīnu</p>
+                </button>
+            </div>
+            <div class="main-page__section1__content">
+                <img class="main-page__section1__content--image" src="assets/main-page-car.png" alt="#">
+            </div>
+        </section>
+        <section class="main-page__section2">
+            <div class="main-page__section2__content">
+                <img class="main-page__section2__content--image" src="assets/main-page-car2.png" alt="#">
+            </div>
+            <div class="main-page__section2__content main-page__section2__content--text">
+                <h2 class="main-page__section2__content--heading1">Par mums</h2>
+                <h3 class="main-page__section2__content--heading2">Esam automašīnu izīrēšanas firma, kas  nodrošina lietotājiem ērtu un ātru automašīnu nomas pakalpojumu tiešsaistē. Šī firma piedāva plašu automašīnu klāstu, lietotāji var apskatīt automašīnu katalogu, izvēlēties transportlīdzekli un veikt rezervāciju.  Papildus tiek nodrošināts 24/7 klientu atbalsts, kas integrēts ar čatbotu, un iespēja saņemt atlaides ilgtermiņa nomām.</h3>
+            </div>
+        </section>
+    </div>
   `;
 }
 
