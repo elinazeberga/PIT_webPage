@@ -1,7 +1,7 @@
+// src/index.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
 const dotenv = require('dotenv');
 const path = require('path');
 
@@ -14,19 +14,16 @@ const adminRoutes = require('./routes/admin');
 dotenv.config();
 
 const app = express();
-
 app.use(bodyParser.json());
-
-// Host static website
 app.use(express.static(path.join(__dirname, '../ui')));
 
-// Set the strictQuery option
 mongoose.set('strictQuery', true);
 
-// Connect to the database
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoDbUri = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_NAME : process.env.MONGODB_URI;
+mongoose.connect(mongoDbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log(`Connected to the ${process.env.NODE_ENV} database`))
+    .catch(err => console.error(`Error connecting to ${process.env.NODE_ENV} database:`, err));
 
-// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -34,7 +31,6 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
-    // Start the server
     app.listen(3000, () => {
         console.log('Server running on port 3000');
     });

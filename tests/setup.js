@@ -1,32 +1,30 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const dotenv = require('dotenv');
 
-let mongoServer;
+dotenv.config();
 
 beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-
-    mongoose.set('strictQuery', true); // Set the strictQuery option
-
-    await mongoose.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+    mongoose.set('strictQuery', true);
+    const testDbUri = process.env.TEST_DB_NAME;
+    console.log('Connecting to Test DB:', testDbUri);
+    await mongoose.connect(testDbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 });
 
+// Can drop the db to cleanup tests
+// Better to run tests indivitually at the moment
 afterAll(async () => {
+    console.log('Dropping database');
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
-    if (mongoServer) {
-        await mongoServer.stop();
-    }
 });
 
-afterEach(async () => {
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-        const collection = collections[key];
-        await collection.deleteMany();
-    }
-});
+// Can cleanup the collections to cleanup tests
+// afterEach(async () => {
+// afterAll(async () => {
+//     console.log('Deleteing collections');
+//     const collections = mongoose.connection.collections;
+//     for (const key in collections) {
+//         const collection = collections[key];
+//         await collection.deleteMany();
+//     }
+// });

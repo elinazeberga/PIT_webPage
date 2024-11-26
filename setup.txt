@@ -23,9 +23,9 @@ In package.json overwrite script tag with
 
 .env file creation:
 
-JWT_SECRET=paskaties whatsappā
-MONGODB_URI=paskaties whatsappā
-
+JWT_SECRET=<?>
+MONGODB_URI=<?>
+TEST_DB_NAME=<?>
 
 Running: 
 (backend and static frontend)

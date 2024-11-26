@@ -1,8 +1,20 @@
 const express = require('express');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const { authenticateAdmin, authenticateUser } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Get user data
+router.get('/profile/:id', authenticateUser, async (req, res) => {
+    try {
+        const { id } = req.params
+        const user = await User.findById(id).select('-password');
+        res.status(200).send({ message: 'Got user profile', User: user });
+    } catch (err) {
+        res.status(500).send({ message: 'Error fetching user details', error: err });
+    }
+});
 
 // Register
 router.post('/register', async (req, res) => {
@@ -31,7 +43,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.put('/alter', async (req, res) => {
+router.put('/alter', authenticateAdmin, async (req, res) => {
     const { id, ...updates } = req.body; // Extract ID and other updates from the request body
     if (!id) {
         return res.status(400).send({ message: 'ID is required to update user information' });
@@ -47,4 +59,16 @@ router.put('/alter', async (req, res) => {
     }
 });
 
+router.delete('/delete', authenticateAdmin, async (req, res) => {
+    try {
+        const {id} = req.body;
+        const result = await User.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        res.status(200).send({ message: 'User deleted successfully'});
+    } catch (err) {
+        res.status(500).send({ message: 'Error deleting user', error: err });
+    }
+});
 module.exports = router;

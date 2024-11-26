@@ -1,7 +1,7 @@
 const express = require('express');
 const Payment = require('../models/payment');
 const { update } = require('../models/user');
-const { authenticateAdmin } = require('../middleware/auth');
+const { authenticateAdmin, authenticateUser } = require('../middleware/auth');
 const router = express.Router();
 
 // Get all payments (admin only)
@@ -15,7 +15,7 @@ router.get('/', authenticateAdmin, async (req, res) => {
 });
 
 // Get payment by Booking ID
-router.get('/booking/:bookingId', async (req, res) => {
+router.get('/booking/:bookingId', authenticateUser, async (req, res) => {
     try {
         const { bookingId } = req.params;
         const payment = await Payment.findOne({ booking: bookingId });
@@ -29,7 +29,7 @@ router.get('/booking/:bookingId', async (req, res) => {
 });
 
 // Create a new payment
-router.post('/', async (req, res) => {
+router.post('/create', authenticateUser, async (req, res) => {
     try {
         const { bookingId, amount, status } = req.body;
         const payment = new Payment({
@@ -58,6 +58,19 @@ router.put('/alter', authenticateAdmin, async (req, res) => {
         res.send({ message: 'Payment updated successfully', car: updatedPayment });
     } catch (err) {
         res.status(500).send({ message: 'Error updating payment', error: err });
+    }
+});
+
+router.delete('/delete', authenticateAdmin, async (req, res) => {
+    try {
+        const {id} = req.body;
+        const result = await Payment.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).send({ message: 'Payment not found' });
+        }
+        res.status(200).send({ message: 'Payment deleted successfully'});
+    } catch (err) {
+        res.status(500).send({ message: 'Error deleting payment', error: err });
     }
 });
 

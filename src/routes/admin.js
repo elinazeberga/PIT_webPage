@@ -1,7 +1,6 @@
 const express = require('express');
-const pages = require('../pages/pages');
-const pageLoading = '../middleware/pageLoading.js';
-const {loadPage} = require(pageLoading);
+const pages = require('../templates/pages');
+const loadPage = require('../middleware/loadPage.js');
 const router = express.Router();
 const { authenticateAdmin } = require('../middleware/auth');
 
