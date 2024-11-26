@@ -4,18 +4,104 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AutoTev.lv</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-  <div id="nav-placeholder"></div>
+  <header class="header">
+    <nav class="header__navigation">
+      <ul class="header__navigation__container">
+        <li class="header__navigation__element">
+        <img class="header__navigation__element--logo" id="header-logo" src="assets/logo.png  " alt="#">
+        </li>
+      </ul>
+      <ul class="header__navigation__container header__navigation__container--pages">
+        <li class="header__navigation__element">
+          <a class="header__navigation__element--asset" href="#" onclick="navigate('home')">Sākumlapa</a>
+        </li>
+        <li class="header__navigation__element">
+          <a class="header__navigation__element--asset" href="#" onclick="navigate('par-mums')">Par mums</a>
+        </li>
+        <li class="header__navigation__element">
+          <a class="header__navigation__element--asset" href="#" onclick="navigate('pakalpojumi')">Pakalpojumi</a>
+        </li>
+        <li class="header__navigation__element">
+          <a class="header__navigation__element--asset" href="#" onclick="navigate('kontakti')">Kontakti</a>
+        </li>
+        <li class="header__navigation__element header__navigation__button">
+          <a class="header__navigation__element--asset header__navigation__element--button" href="#" onclick="navigate('izveleties-masinu')">Izvēlēties automašīnu-></a>
+        </li>
+        <form action="#">
+          <select name="language" id="lang">
+            <option value="lv">LV</option>
+            <option value="eng">ENG</option>
+          </select>
+        </form>
+      </ul>
+    </nav>
+  </header>
 
-  <div id="content">
+  <section id="content">
     <!-- Dynamic content will be injected here -->
-  </div>
+  </section>
 
-  <div id="footer-placeholder"></div>
-
-  <!-- <script src="app.js"></script> -->
-  <script type="module" src="app.js"></script>
+  <footer class="footer">
+    <div class="footer__copyright">
+      <img class="footer__copyright__logo" src="assets/footer.png" alt="#">
+      <p class="footer__copyright__text">
+        Copyright © 2024 AutoTev.Lv.
+        <br>
+        All rights reserved
+      </p>
+    </div>
+    <div class="footer__links">
+      <section class="footer__links__block1">
+        <h3 class="footer__links__block1--heading">Company</h3>
+        <ul class="footer__links__block1__linkContainer">
+          <li class="footer__links__block1__element">
+            <a class="footer__links__block1__element--asset" href="#">About us</a>
+          </li>
+          <li class="footer__links__block1__element">
+            <a class="footer__links__block1__element--asset" href="#">Blog</a>
+          </li>
+          <li class="footer__links__block1__element">
+            <a class="footer__links__block1__element--asset" href="#">Contact us</a>
+          </li>
+          <li class="footer__links__block1__element">
+            <a class="footer__links__block1__element--asset" href="#">Pricing</a>
+          </li>
+        </ul>
+      </section>
+      <section class="footer__links__block2">
+        <h3 class="footer__links__block2--heading">Support</h3>
+        <ul class="footer__links__block2__linkContainer">
+          <li class="footer__links__block2__element">
+            <a class="footer__links__block2__element--asset" href="#">Help center</a>
+          </li>
+          <li class="footer__links__block2__element">
+            <a class="footer__links__block2__element--asset" href="#">Terms of service</a>
+          </li>
+          <li class="footer__links__block2__element">
+            <a class="footer__links__block2__element--asset" href="#">Chat bot</a>
+          </li>
+          <li class="footer__links__block2__element">
+            <a class="footer__links__block2__element--asset" href="#">Privacy policy</a>
+          </li>
+        </ul>
+      </section>
+      <section class="footer__links__block3">
+        <h3 class="footer__links__block3--heading">Stay up to date</h3>
+        <div class="footer__links__block3__element">
+          <label for="email">
+            <input class="footer__links__block3__element--input" type="text" placeholder="Enter you email">
+            <button class="footer__links__block3__element--submit" type="submit">
+              <i class="fa fa-paper-plane fa-2x"></i>
+            </button>
+          </label>
+        </div>
+      </section>
+    </div>
+  </footer>
+  <script src="app.js"></script>
 </body>
 </html>
