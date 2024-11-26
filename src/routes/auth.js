@@ -1,9 +1,20 @@
 const express = require('express');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const { authenticateAdmin } = require('../middleware/auth');
+const { authenticateAdmin, authenticateUser } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Get user data
+router.get('/profile/:id', authenticateUser, async (req, res) => {
+    try {
+        const { id } = req.params
+        const user = await User.findById(id).select('-password');
+        res.status(200).send({ message: 'Got user profile', User: user });
+    } catch (err) {
+        res.status(500).send({ message: 'Error fetching user details', error: err });
+    }
+});
 
 // Register
 router.post('/register', async (req, res) => {

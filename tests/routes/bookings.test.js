@@ -140,7 +140,7 @@ describe('Booking Routes', () => {
             .set('Authorization', `Bearer ${userToken}`)
             .send({ id: booking._id, ...updates });
 
-        console.log("Alter booking response: " + res.body.message)
+        console.log("Alter booking response: ", res.body)
 
         expect(res.statusCode).toEqual(200);
         expect(res.body.message).toEqual('Booking updated successfully');
@@ -155,7 +155,7 @@ describe('Booking Routes', () => {
             .set('Authorization', `Bearer ${userToken}`)
             .send({ id: booking._id });
 
-        console.log("Delete booking response: " + res.body.message)
+        console.log("Delete booking response: ", res.body)
 
         expect(res.statusCode).toEqual(200);
         expect(res.body.message).toEqual('Booking deleted successfully');

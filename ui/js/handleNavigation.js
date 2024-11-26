@@ -3,6 +3,7 @@ import { loadCarList } from './handleCars.js';
 import { attachBookingFormHandler } from './handleBookings.js';
 import { attachPaymentFormHandler } from './handlePayments.js';
 import { attachFormHandlers } from './handleAuth.js';
+import { loadUserProfile } from './handleUser.js';
 
 export function navigate(page, payload = null) {
     injectHTML(`pages/${page}.html`, 'content', () => {
@@ -14,6 +15,8 @@ export function navigate(page, payload = null) {
             attachPaymentFormHandler(payload);
         } else if (page === 'login' || page === 'register') {
             attachFormHandlers();
+        } else if (page === 'profile') {
+            loadUserProfile();
         }
     });
 }
