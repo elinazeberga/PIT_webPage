@@ -83,7 +83,7 @@ describe('Auth Routes', () => {
 
     it('Test: get user data', async () => {
         const res = await request(app)
-            .get('/api/auth/profile')
+            .get(`/api/auth/profile/${userId}`)
             .set('Authorization', `Bearer ${userToken}`);
 
         console.log("Get user data response: ", res.body)
