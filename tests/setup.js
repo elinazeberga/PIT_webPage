@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 beforeAll(async () => {
-    mongoose.set('strictQuery', true); // Set the strictQuery option
+    mongoose.set('strictQuery', true);
 
-    await mongoose.connect(process.env.TEST_DB_NAME, {
+    const testDbUri = process.env.TEST_DB_NAME;
+    console.log('Connecting to Test DB:', testDbUri);
+
+    await mongoose.connect(testDbUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });

@@ -10,12 +10,16 @@ export function loadCarList() {
                 let payload = { cardId: car._id };
                 const carElement = document.createElement('div');
                 carElement.className = 'car-item';
+                const imageElements = car.images.map(imageUrl => `<img src="${imageUrl}" alt="${car.make} ${car.model}" class="car-image">`).join('');
                 carElement.innerHTML = `
-          <h2>${car.make} ${car.model}</h2>
-          <p>ID: ${car._id}</p>
-          <p>Cena dienā: $${car.pricePerDay}</p>
-          <button onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Rezervēt auto</button>
-        `;
+                    <h2>${car.make} ${car.model}</h2>
+                    <div class="car-images">
+                        ${imageElements}
+                    </div>
+                    <p>ID: ${car._id}</p>
+                    <p>Cena dienā: $${car.pricePerDay}</p>
+                    <button onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Rezervēt auto</button>
+                `;
                 carList.appendChild(carElement);
             });
         })
