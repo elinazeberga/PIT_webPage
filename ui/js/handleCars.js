@@ -9,16 +9,16 @@ export function loadCarList() {
             data.forEach(car => {
                 let payload = { cardId: car._id };
                 const carElement = document.createElement('div');
-                carElement.className = 'car-item';
-                const imageElements = car.images.map(imageUrl => `<img src="${imageUrl}" alt="${car.make} ${car.model}" class="car-image">`).join('');
+                carElement.className = 'car__info';
+                const imageElements = car.images.map(imageUrl => `<img src="${imageUrl}" alt="${car.make} ${car.model}" class="car__image-container__image">`).join('');
                 carElement.innerHTML = `
-                    <h2>${car.make} ${car.model}</h2>
-                    <div class="car-images">
+                    <h2 class="car__name">${car.make} ${car.model}</h2>
+                    <div class="car__image-container">
                         ${imageElements}
                     </div>
-                    <p>ID: ${car._id}</p>
-                    <p>Cena dienā: $${car.pricePerDay}</p>
-                    <button onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Rezervēt auto</button>
+                    <p class="car__info--id">ID: ${car._id}</p>
+                    <p class="car__info--price">Cena dienā: $${car.pricePerDay}</p>
+                    <button class="car__reserveCarButton" onclick="navigate('booking', ${JSON.stringify(payload).replace(/"/g, '&quot;')});">Rezervēt auto</button>
                 `;
                 carList.appendChild(carElement);
             });

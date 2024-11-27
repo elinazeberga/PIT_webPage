@@ -161,4 +161,36 @@
   background-color: unset;
 }
 
+.car {
+  display: flex;
+  flex-flow: row wrap;
+}
+.car__info {
+  background-color: #F5F7FA;
+  margin: 20px;
+  padding: 10px;
+  width: 500px;
+  flex-flow: row wrap;
+  display: flex;
+  justify-content: center;
+}
+.car__image-container {
+  height: 300px;
+}
+.car__image-container__image {
+  width: 400px;
+  height: auto;
+}
+.car__info--id {
+  width: 100%;
+}
+.car__info--price {
+  width: 100%;
+}
+.car__reserveCarButton {
+  color: white;
+  padding: 10px;
+  background-color: #2c5dd3;
+}
+
 /*# sourceMappingURL=app.css.map */
