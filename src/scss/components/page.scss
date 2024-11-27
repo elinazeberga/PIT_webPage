@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.car-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 10px 0;
+}
+
+.main-page {
+  min-height: 100vh;
+  justify-content: space-evenly;
+  display: flex;
+  flex-flow: row wrap;
+  &__section1 {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: #F5F7FA;
+    &__content {
+      margin: 40px;
+      &--image {
+      }
+      &--heading1 {
+        font-size: 40px;
+      }
+      &--heading2 {
+        font-size: 40px;
+        color: #55A8FC;
+      }
+      &--button {
+        margin-top: 20px;
+        padding: 11px;
+        background-color: #2c5dd3;
+      }
+      &--button-text {
+        color: white;
+      }
+    }
+  }
+
+  &__section2 {
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    &__content {
+      &--image {
+      }
+      &--text {
+        width: 50%;
+      }
+      &--heading1 {
+        margin-bottom: 20px;
+      }
+      &--heading2 {
+        font-weight: lighter;
+      }
+    }
+  }
+}

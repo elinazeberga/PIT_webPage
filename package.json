@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest --config=jest.config.js"
+    "test": "jest --config=jest.config.js",
+    "sass": "sass --watch src/scss/main.scss ui/css/app.css"
   },
   "author": "GRUPA",
   "license": "MIT",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "jest": "^27.2.5",
     "nodemon": "^3.1.7",
+    "sass": "^1.81.0",
     "supertest": "^6.1.6"
   },
   "directories": {

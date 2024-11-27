@@ -1,0 +1,37 @@
+.header {
+  &__navigation {
+    background-color: #55A8FC;
+    display: flex;
+    justify-content: space-between;
+    &__container {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      &--pages {
+        padding: 20px;
+      }
+    }
+    &__element {
+      padding-left: 10px;
+      padding-right: 10px;
+      &--asset {
+        display: block;
+        padding: 10px 20px;
+        color: #000000;
+        text-decoration: none;
+      }
+      &--logo {
+        padding: 20px;
+        margin-left: 30px;
+        width: 39%;
+        height: auto;
+      }
+      &--button {
+        padding: 15px;
+        background-color: #3288cd;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+}

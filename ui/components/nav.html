@@ -1,10 +1,30 @@
-<nav>
-  <ul>
-    <li><a href="#home" onclick="navigate('home')">Mājas</a></li>
-    <li><a href="#car-list" onclick="navigate('car-list')">Skatīt mašīnas</a></li>
-    <li><a href="#booking" onclick="navigate('booking')">Veikt rezervāciju</a></li>
-    <li><a href="#payment" onclick="navigate('payment')">Maksāt</a></li>
-    <li><a href="#login" onclick="navigate('login')">Pieslēgties</a></li>
-    <li><a href="#register" onclick="navigate('register')">Reģistrēties</a></li>
+<nav class="header__navigation">
+  <ul class="header__navigation__container">
+    <li class="header__navigation__element">
+      <img class="header__navigation__element--logo" id="header-logo" src="assets/logo.png  " alt="#">
+    </li>
+  </ul>
+  <ul class="header__navigation__container header__navigation__container--pages">
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('home')">Sākumlapa</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('par-mums')">Par mums</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('pakalpojumi')">Pakalpojumi</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('kontakti')">Kontakti</a>
+    </li>
+    <li class="header__navigation__element header__navigation__button">
+      <a class="header__navigation__element--asset header__navigation__element--button" href="#" onclick="navigate('izveleties-masinu')">Izvēlēties automašīnu-></a>
+    </li>
+    <form action="#">
+      <select name="language" id="lang">
+        <option value="lv">LV</option>
+        <option value="eng">ENG</option>
+      </select>
+    </form>
   </ul>
 </nav>
