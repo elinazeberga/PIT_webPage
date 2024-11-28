@@ -1,7 +1,7 @@
 import { navigate } from './handleNavigation.js';
 
 export function attachBookingFormHandler(payload = null) {
-    document.getElementById('carId').value = payload != null ? payload.cardId : null;
+    document.getElementById('carId').value = payload != null ? payload.carId : null;
 
     const bookingForm = document.getElementById('booking-form');
     bookingForm.addEventListener('submit', async (event) => {

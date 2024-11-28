@@ -7,7 +7,7 @@ export function loadCarList() {
             const carList = document.getElementById('car-list');
             carList.innerHTML = '';
             data.forEach(car => {
-                let payload = { cardId: car._id };
+                let payload = { carId: car._id };
                 const carElement = document.createElement('div');
                 carElement.className = 'car__info';
                 const imageElements = car.images.map(imageUrl => `<img src="${imageUrl}" alt="${car.make} ${car.model}" class="car__image-container__image">`).join('');

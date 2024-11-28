@@ -1,12 +1,36 @@
-<nav>
-  <ul>
-    <li><a href="#home" onclick="navigate('home')">Mājas</a></li>
-    <li><a href="#car-list" onclick="navigate('car-list')">Skatīt mašīnas</a></li>
-    <li><a href="#booking" onclick="navigate('booking')">Veikt rezervāciju</a></li>
-    <li><a href="#payment" onclick="navigate('payment')">Maksāt</a></li>
-    <li><a href="#login" onclick="navigate('login')">Pieslēgties</a></li>
-    <li><a href="#register" onclick="navigate('register')">Reģistrēties</a></li>
-    <li><a href="#profile" onclick="navigate('profile')">Profils</a></li>
-    <li><a href="#logout" onclick="" id="logout">Iziet</a></li>
+<nav class="header__navigation">
+  <ul class="header__navigation__container">
+    <li class="header__navigation__element">
+      <a href="#" onclick="navigate('home')"><img class="header__navigation__element--logo" id="header-logo" src="assets/logo.png" alt="#"></a>
+    </li>
+  </ul>
+  <ul class="header__navigation__container header__navigation__container--pages">
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('booking')">Veikt rezervāciju</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('payment')">Maksāt</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('login')">Pieslēgties</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('register')">Reģistrēties</a>
+    </li>
+    <li class="header__navigation__element header__navigation__button">
+      <a class="header__navigation__element--asset header__navigation__element--button" href="#" onclick="navigate('car-list')">Izvēlēties automašīnu-></a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" href="#" onclick="navigate('profile')">Profils</a>
+    </li>
+    <li class="header__navigation__element">
+      <a class="header__navigation__element--asset" id="logout" href="#" onclick="navigate('logout')">Iziet</a>
+    </li>
+    <form action="#">
+      <select name="language" id="lang">
+        <option value="lv">LV</option>
+        <option value="eng">ENG</option>
+      </select>
+    </form>
   </ul>
 </nav>

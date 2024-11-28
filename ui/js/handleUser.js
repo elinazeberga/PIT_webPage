@@ -9,7 +9,7 @@ function getPayment(bookingId) {
     .then(response => response.json())
     .then(payment => {
         document.getElementById('user-payments').innerHTML = `
-            <div>
+            <div class="booking">
                 <p>Rezervācijas ID: ${bookingId}</p>
                 <p>Summa: ${payment.amount}</p>
                 <p>Maksājuma datums: ${new Date(payment.paymentDate).toLocaleDateString()}</p>
@@ -31,11 +31,13 @@ export function loadUserProfile() {
     .then(response => response.json())
     .then(data => {
         document.getElementById('user-info').innerHTML = `
-            <p>Vārds: ${data.User.name}</p>
-            <p>Uzvārds: ${data.User.lastName}</p>
-            <p>Epasts: ${data.User.email}</p>
-            <p>Tālrunis: ${data.User.phone}</p>
-            <p>Lojalitāte: ${data.User.loyalty}</p>
+            <div class="user-details">
+                <p>Vārds: ${data.User.name}</p>
+                <p>Uzvārds: ${data.User.lastName}</p>
+                <p>Epasts: ${data.User.email}</p>
+                <p>Tālrunis: ${data.User.phone}</p>
+                <p>Lojalitāte: ${data.User.loyalty}</p>
+            </div>
         `;
     });
 
@@ -47,7 +49,8 @@ export function loadUserProfile() {
     .then(response => response.json())
     .then(bookings => {
         const bookingsHtml = bookings.map(booking => `
-            <div>
+            <div class="reservation">
+                <p>Rezervācijas ID: ${booking._id}</p>
                 <p>Mašīna: ${booking.car.make} ${booking.car.model}</p>
                 <p>Rezervēšanas datums: ${new Date(booking.reservationDate).toLocaleDateString()}</p>
                 <p>Rezervācijas sākums: ${new Date(booking.rentalStartDate).toLocaleDateString()}</p>
