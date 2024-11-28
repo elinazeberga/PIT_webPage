@@ -1,5 +1,3 @@
-import { navigate } from './handleNavigation.js';
-
 export function loadCarList() {
     fetch('/api/cars')
         .then(response => response.json())
