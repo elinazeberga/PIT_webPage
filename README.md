@@ -4,9 +4,13 @@
 
 ## Autori
 Ģirts Rimicāns
+
 Regnārs Slapiņš
+
 Elīna Zēberga
+
 Konstantīns Siņica
+
 Rūdolfs Saukums
 
 ## Satura struktūra
