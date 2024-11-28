@@ -1,3 +1,4 @@
+// Defines page fields and default values if applicable
 const DEFAULT_FIELDS = {
     vehicle: {
         vehicleID: "Automatically Generated",

@@ -1,4 +1,4 @@
-function createUserTableRow(user) {
+function createUserTableRow(user) { // Defines how a user table row should be displayed
     return `
         <tr>
             <td>${user._id}</td>
