@@ -4,6 +4,10 @@
   font-family: Arial, sans-serif;
 }
 
+#content {
+  min-height: 100vh;
+}
+
 .car-card {
   border: 1px solid #ccc;
   padding: 20px;
@@ -42,7 +46,6 @@
       }
     }
   }
-
   &__section2 {
     width: 100%;
     margin-top: 30px;

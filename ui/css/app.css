@@ -4,6 +4,10 @@
   font-family: Arial, sans-serif;
 }
 
+#content {
+  min-height: 100vh;
+}
+
 .car-card {
   border: 1px solid #ccc;
   padding: 20px;
