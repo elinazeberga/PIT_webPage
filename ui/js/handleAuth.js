@@ -18,7 +18,7 @@ export function attachFormHandlers() {
             if (response.ok) {
                 localStorage.setItem('token', result.token);
                 localStorage.setItem('userId', result.userId);
-                alert('Pieslēgšanāš veiksmīga!'); // TODO: Change to html element, text popup
+                alert('Pieslēgšanās veiksmīga!'); // TODO: Change to html element, text popup
                 navigate('home');
                 location.reload();
             } else {
