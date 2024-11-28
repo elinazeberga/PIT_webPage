@@ -1,4 +1,4 @@
-function createPaymentTableRow(payment) {
+function createPaymentTableRow(payment) { //Defines how a payment table row should be displayed
     return `
         <tr>
             <td>${payment.booking}</td>

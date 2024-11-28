@@ -1,4 +1,4 @@
-function createVehicleTableRow(vehicle) {
+function createVehicleTableRow(vehicle) { // Defines how a vehicle table row should be displayed
     return `
         <tr>
             <td><img src="${vehicle.images[0]}" alt="Car image" width="100"></td>
